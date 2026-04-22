@@ -467,6 +467,16 @@ html, body {
 (function () {
   'use strict';
 
+  // ---------- Real page links (override modal preview) ----------
+  // 本物の遷移先ページが出来たら、ここに data-modal キーと URL を登録する。
+  // 登録されたキーは「扉が開く演出 → 実ページへ遷移」になる（モーダルは出ない）。
+  const LINKS = {
+    blog: 'https://newarc.jp/naviarc/'
+    // company: '/company.html',
+    // service: '/service.html',
+    // ...
+  };
+
   // ---------- Data (Sample content) ----------
   const CONTENT = {
     company: {
@@ -667,6 +677,15 @@ html, body {
         return;
       }
 
+      // 本物の遷移先URLが登録されている場合はそこへ遷移
+      if (LINKS[key]) {
+        triggerDoor(face, () => {
+          window.location.href = LINKS[key];
+        });
+        return;
+      }
+
+      // それ以外はモーダルプレビュー
       triggerDoor(face, () => openModal(key));
     });
   });
