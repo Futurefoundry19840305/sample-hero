@@ -101,12 +101,18 @@ html, body {
 }
 
 /* ========= 3D SCENE ========= */
+.scene-wrap {
+  display: inline-block;
+  margin: 30px auto 10px;
+  will-change: transform;
+  /* JS applies translate() for the floating motion */
+}
+
 .scene {
   position: relative;
   width: var(--cube-size);
   height: var(--cube-size);
   perspective: 800px;
-  margin: 30px auto 10px;
   cursor: grab;
   z-index: 2;
   touch-action: none;
@@ -408,6 +414,7 @@ html, body {
     <p>Sample合同会社 — 東京発・不動産FPのプロフェッショナル</p>
   </div>
 
+  <div class="scene-wrap">
   <div id="hero-cube" class="scene" role="group" aria-label="3Dナビゲーションキューブ">
     <div class="cube" id="cube">
       <div class="face front" data-face="front">
@@ -441,6 +448,7 @@ html, body {
         </div>
       </div>
     </div>
+  </div>
   </div>
 
   <p class="hint">
@@ -510,6 +518,7 @@ html, body {
 
   // ---------- Elements ----------
   const scene = document.getElementById('hero-cube');
+  const sceneWrap = document.querySelector('.scene-wrap');
   const cube = document.getElementById('cube');
   const faces = Array.from(document.querySelectorAll('.face'));
   const modal = document.getElementById('modal');
@@ -530,7 +539,8 @@ html, body {
   let rotStartY = 0;
   let rotStartX = 0;
   let resumeTimer = null;
-  let tickCount = 0; // for sine-wave oscillation
+  let tickCount = 0;  // rotation phase (frozen during drag)
+  let floatTime = 0;  // floating phase (always advances)
 
   // LocalStorage: remember rotation preference
   try {
@@ -569,15 +579,27 @@ html, body {
     });
   }
 
-  // ---------- Animation loop (multi-axis float) ----------
+  // ---------- Animation loop (multi-axis float + drift) ----------
   function tick() {
+    // 位置：画面内を浮遊（常に進行、ドアが開いている間は静止）
+    if (!openingFace) {
+      floatTime += 1;
+      // 画面幅に応じて振幅を調整（モバイルでは小さく）
+      const w = window.innerWidth;
+      const ampX = Math.min(90, Math.max(30, w * 0.12));  // 30〜90px
+      const ampY = Math.min(55, Math.max(20, w * 0.06));  // 20〜55px
+      // 異なる周期でLissajous風の漂い
+      const floatX = Math.sin(floatTime * 0.0032) * ampX;
+      const floatY = Math.sin(floatTime * 0.0024 + 1.3) * ampY;
+      if (sceneWrap) {
+        sceneWrap.style.transform = `translate(${floatX.toFixed(2)}px, ${floatY.toFixed(2)}px)`;
+      }
+    }
+    // 回転：auto時のみ更新
     if (auto && !dragging) {
-      // Y軸：水平方向に連続回転（メイン）
-      rotY += 0.35;
-      // X軸：前後に正弦波で揺れる（5°〜35°の範囲でゆったり）
-      rotX = 20 + Math.sin(tickCount * 0.008) * 15;
-      // Z軸：軽くロール（±6°でさらにゆっくり）
-      rotZ = Math.sin(tickCount * 0.005) * 6;
+      rotY += 0.35;                                       // Y軸連続回転
+      rotX = 20 + Math.sin(tickCount * 0.008) * 15;       // X軸 5°〜35°
+      rotZ = Math.sin(tickCount * 0.005) * 6;             // Z軸 ±6°
       tickCount++;
     }
     render();
