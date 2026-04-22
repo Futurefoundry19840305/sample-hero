@@ -452,7 +452,7 @@ html, body {
   </div>
 
   <p class="hint">
-    🖱️ ドラッグで回転 / <kbd>←</kbd><kbd>→</kbd> で手動回転 / <kbd>ESC</kbd> で閉じる
+    🖱️ ドラッグで回転 / <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> キー / 右上ボタンで自動回転ON/OFF / <kbd>ESC</kbd> で閉じる
   </p>
 </section>
 
@@ -532,13 +532,13 @@ html, body {
   let rotY = 0;
   let rotX = 20;
   let rotZ = 0;
+  let baseRotX = 20;  // X軸の基準値（ドラッグで更新、オシレーションはこれに加算）
   let auto = true;
   let dragging = false;
   let dragStartX = 0;
   let dragStartY = 0;
   let rotStartY = 0;
   let rotStartX = 0;
-  let resumeTimer = null;
   let tickCount = 0;  // rotation phase (frozen during drag)
   let floatTime = 0;  // floating phase (always advances)
 
@@ -595,11 +595,11 @@ html, body {
         sceneWrap.style.transform = `translate(${floatX.toFixed(2)}px, ${floatY.toFixed(2)}px)`;
       }
     }
-    // 回転：auto時のみ更新
+    // 回転：auto時のみ更新（baseRotXにオシレーションを加算することでドラッグ位置を尊重）
     if (auto && !dragging) {
-      rotY += 0.35;                                       // Y軸連続回転
-      rotX = 20 + Math.sin(tickCount * 0.008) * 15;       // X軸 5°〜35°
-      rotZ = Math.sin(tickCount * 0.005) * 6;             // Z軸 ±6°
+      rotY += 0.35;                                         // Y軸連続回転
+      rotX = baseRotX + Math.sin(tickCount * 0.008) * 10;   // X軸：基準値±10°で揺らぐ
+      rotZ = Math.sin(tickCount * 0.005) * 6;               // Z軸 ±6°
       tickCount++;
     }
     render();
@@ -619,6 +619,11 @@ html, body {
     dragStartY = e.clientY;
     rotStartY = rotY;
     rotStartX = rotX;
+    // 押下と同時に自動回転を停止（クリック中に面が動かないように）
+    if (auto) {
+      auto = false;
+      updateToggleLabel();
+    }
   }
   function onPointerMove(e) {
     if (!pointerDown) return;
@@ -628,55 +633,42 @@ html, body {
     if (!dragging && Math.hypot(dx, dy) > DRAG_THRESHOLD) {
       dragging = true;
       auto = false;
+      updateToggleLabel();
       try { scene.setPointerCapture && scene.setPointerCapture(activePointerId); } catch(e) {}
     }
     if (dragging) {
       rotY = rotStartY + dx * 0.5;
-      rotX = Math.max(-60, Math.min(60, rotStartX - dy * 0.3));
+      // ±90°まで自由にドラッグ可能（top/bottom面も正面に出せる）
+      rotX = Math.max(-90, Math.min(90, rotStartX - dy * 0.3));
     }
   }
   function onPointerUp() {
     pointerDown = false;
     if (dragging) {
       dragging = false;
-      scheduleResume();
+      // baseRotX を現在位置に更新することで、auto再開時のスナップを防ぐ
+      baseRotX = rotX - Math.sin(tickCount * 0.008) * 10;
+      // 自動回転は再開しない（ユーザーの位置を尊重）
     }
     activePointerId = null;
   }
-  function scheduleResume() {
-    clearTimeout(resumeTimer);
-    resumeTimer = setTimeout(() => {
-      const savedPref = (function(){
-        try { return localStorage.getItem('sample_auto_rotate'); } catch(e) { return null; }
-      })();
-      if (savedPref !== 'false') {
-        auto = true;
-        updateToggleLabel();
-      }
-    }, 1800);
-  }
+  // scheduleResume は廃止：ユーザーが明示的にトグルするまで現状維持
 
   scene.addEventListener('pointerdown', onPointerDown);
   window.addEventListener('pointermove', onPointerMove);
   window.addEventListener('pointerup', onPointerUp);
   window.addEventListener('pointercancel', onPointerUp);
 
-  // ---------- Hover: pause auto-rotate so the user can aim & click ----------
-  let hoverPaused = false;
+  // ---------- Hover: pause auto-rotate while aiming ----------
   scene.addEventListener('mouseenter', () => {
-    hoverPaused = true;
-    auto = false;
+    // ホバー中は自動回転を停止（ドラッグ中は既にauto=false）
+    if (auto) {
+      auto = false;
+      updateToggleLabel();
+    }
   });
-  scene.addEventListener('mouseleave', () => {
-    hoverPaused = false;
-    // 保存された設定を尊重して再開
-    try {
-      const saved = localStorage.getItem('sample_auto_rotate');
-      if (saved !== 'false' && !openingFace) {
-        auto = true;
-      }
-    } catch (e) { /* no-op */ }
-  });
+  // mouseleave では再開しない：ユーザーがドラッグや操作をしていた場合、
+  // その位置のまま止まっていた方がクリックしやすい。再開は右上のボタンで。
 
   // ---------- Keyboard ----------
   window.addEventListener('keydown', (e) => {
@@ -684,10 +676,15 @@ html, body {
       if (e.key === 'Escape') closeModal();
       return;
     }
-    if (e.key === 'ArrowRight') { rotY += 90; auto = false; scheduleResume(); }
-    else if (e.key === 'ArrowLeft') { rotY -= 90; auto = false; scheduleResume(); }
-    else if (e.key === 'ArrowUp') { rotX = Math.max(-60, rotX - 15); auto = false; scheduleResume(); }
-    else if (e.key === 'ArrowDown') { rotX = Math.min(60, rotX + 15); auto = false; scheduleResume(); }
+    const updateBase = () => {
+      auto = false;
+      updateToggleLabel();
+      baseRotX = rotX - Math.sin(tickCount * 0.008) * 10;
+    };
+    if (e.key === 'ArrowRight') { rotY += 90; updateBase(); }
+    else if (e.key === 'ArrowLeft') { rotY -= 90; updateBase(); }
+    else if (e.key === 'ArrowUp') { rotX = Math.max(-90, rotX - 15); updateBase(); }
+    else if (e.key === 'ArrowDown') { rotX = Math.min(90, rotX + 15); updateBase(); }
     else if (e.key === 'Escape') closeModal();
   });
 
