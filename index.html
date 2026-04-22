@@ -212,7 +212,8 @@ html, body {
   font-weight: 800;
   letter-spacing: 0.08em;
   cursor: pointer;
-  pointer-events: none;  /* front-face check enables */
+  pointer-events: auto;  /* default clickable; backface-visibility on panel hides back */
+  backface-visibility: hidden;
   /* 選択ハイライト無効化 */
   user-select: none;
   -webkit-user-select: none;
@@ -562,8 +563,7 @@ html, body {
     faces.forEach(f => {
       const isFront = f.dataset.face === frontName;
       f.classList.toggle('active', isFront);
-      const btn = f.querySelector('button');
-      if (btn) btn.style.pointerEvents = isFront ? 'auto' : 'none';
+      // pointer-events はCSSのbackface-visibilityで裏側を自動遮断するため、ここでは操作しない
     });
   }
 
@@ -576,27 +576,42 @@ html, body {
     requestAnimationFrame(tick);
   }
 
-  // ---------- Drag ----------
+  // ---------- Drag (with tap-vs-drag distinction) ----------
+  const DRAG_THRESHOLD = 6; // px — 6px以上動いたらドラッグ扱い。それ未満はクリック扱い
+  let pointerDown = false;
+  let activePointerId = null;
+
   function onPointerDown(e) {
-    dragging = true;
-    auto = false;
-    scheduleResume();
-    scene.setPointerCapture && scene.setPointerCapture(e.pointerId);
+    pointerDown = true;
+    dragging = false; // まだドラッグ確定ではない
+    activePointerId = e.pointerId;
     dragStartX = e.clientX;
     dragStartY = e.clientY;
     rotStartY = rotY;
     rotStartX = rotX;
   }
   function onPointerMove(e) {
-    if (!dragging) return;
+    if (!pointerDown) return;
     const dx = e.clientX - dragStartX;
     const dy = e.clientY - dragStartY;
-    rotY = rotStartY + dx * 0.5;
-    rotX = Math.max(-60, Math.min(60, rotStartX - dy * 0.3));
+    // 閾値を超えたら初めてドラッグ開始
+    if (!dragging && Math.hypot(dx, dy) > DRAG_THRESHOLD) {
+      dragging = true;
+      auto = false;
+      try { scene.setPointerCapture && scene.setPointerCapture(activePointerId); } catch(e) {}
+    }
+    if (dragging) {
+      rotY = rotStartY + dx * 0.5;
+      rotX = Math.max(-60, Math.min(60, rotStartX - dy * 0.3));
+    }
   }
   function onPointerUp() {
-    dragging = false;
-    scheduleResume();
+    pointerDown = false;
+    if (dragging) {
+      dragging = false;
+      scheduleResume();
+    }
+    activePointerId = null;
   }
   function scheduleResume() {
     clearTimeout(resumeTimer);
@@ -615,6 +630,23 @@ html, body {
   window.addEventListener('pointermove', onPointerMove);
   window.addEventListener('pointerup', onPointerUp);
   window.addEventListener('pointercancel', onPointerUp);
+
+  // ---------- Hover: pause auto-rotate so the user can aim & click ----------
+  let hoverPaused = false;
+  scene.addEventListener('mouseenter', () => {
+    hoverPaused = true;
+    auto = false;
+  });
+  scene.addEventListener('mouseleave', () => {
+    hoverPaused = false;
+    // 保存された設定を尊重して再開
+    try {
+      const saved = localStorage.getItem('sample_auto_rotate');
+      if (saved !== 'false' && !openingFace) {
+        auto = true;
+      }
+    } catch (e) { /* no-op */ }
+  });
 
   // ---------- Keyboard ----------
   window.addEventListener('keydown', (e) => {
