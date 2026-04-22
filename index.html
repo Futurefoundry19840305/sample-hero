@@ -522,6 +522,7 @@ html, body {
   // ---------- State ----------
   let rotY = 0;
   let rotX = 20;
+  let rotZ = 0;
   let auto = true;
   let dragging = false;
   let dragStartX = 0;
@@ -529,6 +530,7 @@ html, body {
   let rotStartY = 0;
   let rotStartX = 0;
   let resumeTimer = null;
+  let tickCount = 0; // for sine-wave oscillation
 
   // LocalStorage: remember rotation preference
   try {
@@ -539,7 +541,7 @@ html, body {
 
   // ---------- Render ----------
   function render() {
-    cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg)`;
     updateFrontFace();
   }
 
@@ -567,10 +569,16 @@ html, body {
     });
   }
 
-  // ---------- Animation loop ----------
+  // ---------- Animation loop (multi-axis float) ----------
   function tick() {
     if (auto && !dragging) {
-      rotY += 0.3;
+      // Y軸：水平方向に連続回転（メイン）
+      rotY += 0.35;
+      // X軸：前後に正弦波で揺れる（5°〜35°の範囲でゆったり）
+      rotX = 20 + Math.sin(tickCount * 0.008) * 15;
+      // Z軸：軽くロール（±6°でさらにゆっくり）
+      rotZ = Math.sin(tickCount * 0.005) * 6;
+      tickCount++;
     }
     render();
     requestAnimationFrame(tick);
