@@ -836,15 +836,164 @@ html, body {
 .door::before {
   content: '';
   position: absolute;
-  top: -70px;
+  top: -90px;
   bottom: -60px;
-  left: -55px;
-  right: -55px;
-  background: linear-gradient(180deg, #0A060F 0%, #050208 100%);
+  left: -70px;
+  right: -70px;
+  background:
+    linear-gradient(180deg, #120820 0%, #1C0D30 45%, #0A050F 100%);
   box-shadow:
-    inset 0 0 80px rgba(0,0,0,0.95),
-    inset 0 2px 1px rgba(255,255,255,0.025);
-  z-index: -2;
+    inset 0 0 90px rgba(0,0,0,0.95),
+    inset 0 2px 1px rgba(100, 70, 140, 0.2);
+  z-index: -3;
+}
+
+/* Ornate stone pillars on either side of the doorway */
+.door-column {
+  position: absolute;
+  top: -32px;
+  bottom: -32px;
+  width: 16px;
+  background: linear-gradient(90deg,
+    #050308 0%,
+    #1a0F24 18%,
+    #4A2F5C 38%,
+    #6C4884 50%,
+    #4A2F5C 62%,
+    #1a0F24 82%,
+    #050308 100%);
+  border-radius: 3px 3px 1px 1px;
+  box-shadow:
+    inset 0 3px 0 rgba(180, 140, 210, 0.35),
+    inset 0 -3px 0 rgba(0,0,0,0.75),
+    3px 0 8px rgba(0,0,0,0.6),
+    -3px 0 8px rgba(0,0,0,0.6);
+  z-index: 2;
+}
+.door-column-l { left: -20px; }
+.door-column-r { right: -20px; }
+/* Stone bands on columns (upper + lower) */
+.door-column::before,
+.door-column::after {
+  content: '';
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  height: 7px;
+  background: linear-gradient(180deg, #5A3C70 0%, #2A162C 100%);
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.7),
+    inset 0 1px 0 rgba(180, 140, 200, 0.25);
+}
+.door-column::before { top: 18%; }
+.door-column::after  { bottom: 18%; }
+
+/* Torch cup at the top of each column */
+.door-torch {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  width: 22px;
+  height: 32px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  filter:
+    drop-shadow(0 0 8px var(--door-color))
+    drop-shadow(0 0 22px rgba(var(--door-rgb), 0.7))
+    drop-shadow(0 0 40px rgba(var(--door-rgb), 0.45));
+}
+/* Actual flame */
+.door-torch::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: 16px;
+  height: 24px;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(ellipse at 50% 75%,
+      #FFF 0%,
+      #FFF 14%,
+      var(--door-color) 32%,
+      rgba(var(--door-rgb), 0.6) 55%,
+      rgba(var(--door-rgb), 0.22) 78%,
+      transparent 95%);
+  border-radius: 50% 50% 45% 45% / 70% 70% 35% 35%;
+  filter: blur(0.6px);
+  animation: torchFlicker 0.14s ease-in-out infinite alternate;
+}
+/* Torch holder / bracket (dark metal cup) */
+.door-torch::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 9px;
+  background: linear-gradient(180deg,
+    #2A1830 0%,
+    #4A2E54 35%,
+    #180A20 100%);
+  border-radius: 2px 2px 1px 1px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.8),
+    inset 0 1px 0 rgba(180, 140, 200, 0.3);
+}
+
+@keyframes torchFlicker {
+  0%   { transform: translateX(-50%) scale(1, 1);       opacity: 0.92; }
+  25%  { transform: translateX(-50%) scale(0.93, 1.08); opacity: 1;    }
+  50%  { transform: translateX(-50%) scale(1.04, 0.94); opacity: 0.96; }
+  75%  { transform: translateX(-50%) scale(0.96, 1.05); opacity: 1;    }
+  100% { transform: translateX(-50%) scale(1.02, 0.98); opacity: 0.94; }
+}
+
+/* Ornate arched frame sitting on the doorway */
+.door-frame {
+  position: absolute;
+  inset: -5px;
+  border-radius: 48% 48% 3% 3% / 32% 32% 3% 3%;
+  pointer-events: none;
+  background: transparent;
+  border: 2px solid rgba(150, 110, 180, 0.35);
+  box-shadow:
+    0 0 0 1px rgba(40, 20, 55, 0.9),
+    inset 0 0 0 1px rgba(90, 60, 120, 0.3),
+    inset 0 0 14px rgba(0,0,0,0.6);
+  z-index: 3;
+}
+/* Keystone ornament at the top of the arch */
+.door-frame::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 14px;
+  background:
+    radial-gradient(ellipse at 50% 55%,
+      rgba(200, 160, 220, 0.6) 0%,
+      rgba(90, 60, 110, 0.85) 45%,
+      rgba(30, 15, 40, 0.95) 100%);
+  border-radius: 50% 50% 25% 25%;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.7);
+}
+/* Twin diamond ornaments on the arch shoulders */
+.door-frame::after {
+  content: '';
+  position: absolute;
+  top: 32%;
+  left: -7px;
+  right: -7px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(180, 140, 200, 0.4) 15%,
+    rgba(180, 140, 200, 0.4) 85%,
+    transparent 100%);
 }
 
 /* The glowing doorway (arched at top) */
@@ -996,14 +1145,48 @@ html, body {
   .cube-stage::after { display: none; }
   .cube-close { top: 16px; right: 16px; }
   .door-row {
-    flex-direction: column;
-    gap: 140px;
-    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: clamp(14px, 4vw, 36px);
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 8px;
   }
   .door {
-    width: 150px;
-    height: 250px;
+    width: clamp(78px, 24vw, 130px);
+    height: clamp(140px, 42vw, 220px);
   }
+  .door::before {
+    top: -60px; bottom: -40px;
+    left: -36px; right: -36px;
+  }
+  .door-column {
+    top: -20px; bottom: -22px;
+    width: 9px;
+  }
+  .door-column-l { left: -11px; }
+  .door-column-r { right: -11px; }
+  .door-torch {
+    top: -20px;
+    width: 14px;
+    height: 22px;
+  }
+  .door-frame {
+    border-width: 3px;
+  }
+  .door-label {
+    bottom: -46px;
+  }
+  .door-word {
+    font-size: 14px;
+    letter-spacing: 0.35em;
+  }
+  .door-romaji {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+  }
+  .choices-title { font-size: clamp(22px, 6vw, 34px); }
+  .choices-sub   { font-size: clamp(12px, 3.2vw, 15px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1065,7 +1248,10 @@ html, body {
 
     <div class="door-row" role="group" aria-label="3つの光">
       <button type="button" class="door door--green" data-modal="green" aria-label="希望 — HOPE">
+        <span class="door-column door-column-l" aria-hidden="true"><span class="door-torch"></span></span>
+        <span class="door-column door-column-r" aria-hidden="true"><span class="door-torch"></span></span>
         <span class="door-light" aria-hidden="true"></span>
+        <span class="door-frame" aria-hidden="true"></span>
         <span class="door-floor" aria-hidden="true"></span>
         <span class="door-label">
           <span class="door-word">希望</span>
@@ -1074,7 +1260,10 @@ html, body {
       </button>
 
       <button type="button" class="door door--blue" data-modal="blue" aria-label="静寂 — STILLNESS">
+        <span class="door-column door-column-l" aria-hidden="true"><span class="door-torch"></span></span>
+        <span class="door-column door-column-r" aria-hidden="true"><span class="door-torch"></span></span>
         <span class="door-light" aria-hidden="true"></span>
+        <span class="door-frame" aria-hidden="true"></span>
         <span class="door-floor" aria-hidden="true"></span>
         <span class="door-label">
           <span class="door-word">静寂</span>
@@ -1083,7 +1272,10 @@ html, body {
       </button>
 
       <button type="button" class="door door--red" data-modal="red" aria-label="情熱 — PASSION">
+        <span class="door-column door-column-l" aria-hidden="true"><span class="door-torch"></span></span>
+        <span class="door-column door-column-r" aria-hidden="true"><span class="door-torch"></span></span>
         <span class="door-light" aria-hidden="true"></span>
+        <span class="door-frame" aria-hidden="true"></span>
         <span class="door-floor" aria-hidden="true"></span>
         <span class="door-label">
           <span class="door-word">情熱</span>
