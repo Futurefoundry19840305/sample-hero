@@ -119,14 +119,15 @@ html, body {
   background-size: 20px 25px, 18px 22px, 22px 28px;
 }
 
-/* SAMPLE NEON SIGN — left, tilted, flickering */
+/* SAMPLE NEON SIGN — left, tilted, flickering, with glowing gradient frame */
 .neon-sign {
   position: absolute;
-  top: 17%;
-  left: 7%;
+  top: 14%;
+  left: 6%;
+  padding: 0.18em 0.55em 0.24em;
   font-family: 'Arial Black', 'Impact', sans-serif;
   font-weight: 900;
-  font-size: clamp(52px, 8.5vw, 118px);
+  font-size: clamp(50px, 8vw, 112px);
   letter-spacing: 0.05em;
   color: var(--neon-warm);
   transform: rotate(-2.8deg);
@@ -139,6 +140,65 @@ html, body {
   user-select: none;
   -webkit-user-select: none;
   pointer-events: none;
+  isolation: isolate;
+}
+/* Outer glow halo behind the sign */
+.neon-sign::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  background: radial-gradient(ellipse at center, rgba(255, 140, 70, 0.35), rgba(255, 90, 40, 0.08) 55%, transparent 75%);
+  filter: blur(18px);
+  z-index: -2;
+  pointer-events: none;
+}
+/* Animated gradient frame wrapping the SAMPLE text */
+@property --sign-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.neon-sign::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  padding: 3px;
+  background: conic-gradient(
+    from var(--sign-angle),
+    #FFB366 0%,
+    #FF7040 12%,
+    #FFE6B0 22%,
+    #FF8848 35%,
+    #9BDFFF 48%,
+    #FFC788 60%,
+    #FF5A28 72%,
+    #FFD9A0 85%,
+    #FFB366 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+          mask-composite: exclude;
+  animation: frameSpin 7s linear infinite, frameFlicker 5.3s infinite;
+  filter:
+    drop-shadow(0 0 4px rgba(255, 160, 90, 0.8))
+    drop-shadow(0 0 14px rgba(255, 110, 60, 0.55))
+    drop-shadow(0 0 28px rgba(255, 90, 40, 0.35));
+  z-index: -1;
+  pointer-events: none;
+}
+@keyframes frameSpin {
+  to { --sign-angle: 360deg; }
+}
+@keyframes frameFlicker {
+  0%, 45%, 48%, 80%, 82%, 100% { opacity: 1; }
+  46%, 47% { opacity: 0.35; }
+  81% { opacity: 0.6; }
 }
 .neon-sign .sub {
   display: block;
@@ -344,6 +404,12 @@ html, body {
     transform 0.85s cubic-bezier(.65, 0, .25, 1),
     filter 0.5s;
   filter: drop-shadow(0 4px 20px rgba(155, 223, 255, 0.2));
+}
+/* Floating wrapper: carries the subtle drift, no transition so it feels organic */
+.cube-float {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
 }
 .cube-stage::before {
   /* Glowing ring to suggest clickability when docked */
@@ -697,7 +763,8 @@ html, body {
 
 <!-- The cube (docked top-right by default, expands to center on click) -->
 <div class="cube-stage" id="cubeStage" role="button" tabindex="0" aria-label="3Dメニューを開く">
-  <div class="scene" id="hero-cube" role="group" aria-label="3Dナビゲーションキューブ">
+  <div class="cube-float" id="cubeFloat">
+   <div class="scene" id="hero-cube" role="group" aria-label="3Dナビゲーションキューブ">
     <div class="cube" id="cube">
       <div class="face front" data-face="front">
         <div class="face-panel">
@@ -730,6 +797,7 @@ html, body {
         </div>
       </div>
     </div>
+   </div>
   </div>
 </div>
 
@@ -792,6 +860,7 @@ html, body {
   const scene = document.getElementById('hero-cube');
   const cube = document.getElementById('cube');
   const stage = document.getElementById('cubeStage');
+  const floatWrap = document.getElementById('cubeFloat');
   const backdrop = document.getElementById('cubeBackdrop');
   const cubeClose = document.getElementById('cubeClose');
   const faces = Array.from(document.querySelectorAll('.face'));
@@ -853,6 +922,11 @@ html, body {
     backdrop.classList.remove('active');
     cubeClose.classList.remove('show');
     stage.setAttribute('aria-label', '3Dメニューを開く');
+    // Reset translate so the stage returns to its top-right docked position
+    stage.style.setProperty('--stage-tx', '0px');
+    stage.style.setProperty('--stage-ty', '0px');
+    // Ensure auto-rotate resumes
+    auto = true;
   }
 
   // Click stage to expand
@@ -899,16 +973,17 @@ html, body {
 
   // ---------- Animation loop ----------
   function tick() {
-    // Float (subtle drift even when docked, pause during opening)
+    // Float (subtle position drift). IMPORTANT: never apply CSS `filter` to the
+    // .cube element — that flattens the 3D transform context. Instead we move
+    // a dedicated wrapper (.cube-float) so the 3D perspective stays intact and
+    // the stage keeps its dock/active transition.
     if (!openingFace) {
       floatTime += 1;
-      const vw = window.innerWidth;
-      const ampX = Math.min(18, Math.max(6, vw * 0.02));
-      const ampY = Math.min(12, Math.max(4, vw * 0.012));
+      const ampX = 10;
+      const ampY = 7;
       const fx = Math.sin(floatTime * 0.0032) * ampX;
       const fy = Math.sin(floatTime * 0.0024 + 1.3) * ampY;
-      // tiny float applied to the cube itself (not stage, so it doesn't fight dock/active transform)
-      cube.style.filter = `drop-shadow(${fx.toFixed(1)}px ${fy.toFixed(1)}px 10px rgba(155,223,255,0.2))`;
+      floatWrap.style.transform = `translate3d(${fx.toFixed(2)}px, ${fy.toFixed(2)}px, 0)`;
     }
     if (auto && !dragging) {
       rotY += 0.35;
