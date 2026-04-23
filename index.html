@@ -3,138 +3,426 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Sample合同会社 - 不動産FP専門の東京の会社。資産形成、相続対策、不動産投資のプロフェッショナル。">
-<title>Sample合同会社 | 不動産FP・東京</title>
+<meta name="description" content="Sample合同会社 - 不動産FP専門。廃れた街角で描く、次の一歩。">
+<title>Sample合同会社 | 静寂の中に灯る設計</title>
 <style>
-/* Modal-Preview Auto-Rotate Cube: 2026/4/22 */
+/* Modal-Preview Auto-Rotate Cube + Dusk City Hero: 2026/4/23 */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg-1: #0f172a;
-  --bg-2: #1e3a8a;
-  --bg-3: #0ea5e9;
-  --accent: #38bdf8;
-  --accent-2: #f59e0b;
-  --text: #f8fafc;
-  --text-dim: #cbd5e1;
-  --face-bg: rgba(15, 23, 42, 0.82);
-  --face-border: rgba(56, 189, 248, 0.45);
-  --modal-bg: rgba(2, 6, 23, 0.92);
-  --modal-panel: #0f172a;
-  --btn-bg: linear-gradient(135deg, #0ea5e9 0%, #1e40af 100%);
-  --radius: 14px;
-  --cube-size: 260px;
+  /* 夕凪パレット */
+  --sky-top:      #1E1530;
+  --sky-mid:      #5B3670;
+  --sky-warm:     #B3674F;
+  --sky-bottom:   #E49766;
+  --city-dark:    #110A1C;
+  --city-mid:     #1F1530;
+  --neon-warm:    #FFB366;
+  --neon-glow:    #FF8848;
+  --star-core:    #EAF3FF;
+  --star-blue:    #9BDFFF;
+  --cta-color:    #9BDFFF;
+  --text:         #F5EFE4;
+  --text-dim:     #BEB5A5;
+  --cube-size:    min(320px, 72vw, 72vh);
 }
 
 html, body {
   height: 100%;
-  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", system-ui, -apple-system, sans-serif;
-  background: var(--bg-1);
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", system-ui, sans-serif;
+  background: var(--sky-top);
   color: var(--text);
   overflow-x: hidden;
   line-height: 1.7;
 }
 
-/* ========= HERO ========= */
+/* ========================= HERO (Dusk City) ========================= */
 .hero {
   position: relative;
-  min-height: 100vh;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 20px 60px;
-  background: radial-gradient(ellipse at top, #1e40af 0%, #0f172a 45%, #020617 100%);
+  min-height: 100vh;
   overflow: hidden;
+  isolation: isolate;
 }
 
+/* SKY: evening calm gradient */
 .hero::before {
-  content: "";
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    var(--sky-top)    0%,
+    #2A1A42           18%,
+    #5B3670           40%,
+    #A45A64           62%,
+    var(--sky-warm)   78%,
+    var(--sky-bottom) 95%,
+    #3B1E30          100%
+  );
+  z-index: -3;
+}
+
+/* Atmospheric haze */
+.hero::after {
+  content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 30%, rgba(14, 165, 233, 0.25), transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(245, 158, 11, 0.15), transparent 45%);
+    radial-gradient(ellipse at 72% 28%, rgba(255, 200, 140, 0.12), transparent 55%),
+    radial-gradient(ellipse at 30% 60%, rgba(90, 40, 80, 0.25), transparent 70%);
+  pointer-events: none;
+  z-index: -2;
+}
+
+/* Faint stars in upper sky */
+.stars {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 55%;
+  z-index: -1;
+  background-image:
+    radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 35% 40%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 75% 35%, rgba(255,255,255,0.35), transparent),
+    radial-gradient(1px 1px at 88% 10%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 5% 55%, rgba(255,255,255,0.25), transparent),
+    radial-gradient(1px 1px at 45% 50%, rgba(255,255,255,0.3), transparent);
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* City silhouette */
+.city {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 45%;
+  z-index: -1;
   pointer-events: none;
 }
-
-.brand {
+.building {
   position: absolute;
-  top: 24px;
-  left: 28px;
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: 0.08em;
-  color: var(--text);
+  bottom: 0;
+  background: linear-gradient(180deg, var(--city-mid) 0%, var(--city-dark) 100%);
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.4);
+}
+.building::before {
+  /* broken window dots */
+  content: '';
+  position: absolute;
+  inset: 20% 15% 15% 15%;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,180,100,0.35) 0.5px, transparent 1.5px),
+    radial-gradient(circle at 60% 70%, rgba(255,180,100,0.15) 0.5px, transparent 1.5px),
+    radial-gradient(circle at 80% 20%, rgba(255,180,100,0.25) 0.5px, transparent 1.5px);
+  background-size: 20px 25px, 18px 22px, 22px 28px;
+}
+
+/* SAMPLE NEON SIGN — left, tilted, flickering */
+.neon-sign {
+  position: absolute;
+  top: 17%;
+  left: 7%;
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  font-weight: 900;
+  font-size: clamp(52px, 8.5vw, 118px);
+  letter-spacing: 0.05em;
+  color: var(--neon-warm);
+  transform: rotate(-2.8deg);
+  text-shadow:
+    0 0 6px #FFC788,
+    0 0 14px var(--neon-glow),
+    0 0 32px rgba(255, 136, 72, 0.65),
+    0 0 70px rgba(255, 100, 50, 0.35);
+  z-index: 2;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
+.neon-sign .sub {
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-size: 0.18em;
+  font-weight: 400;
+  letter-spacing: 0.4em;
+  color: rgba(255, 195, 140, 0.65);
+  transform: rotate(0.5deg);
+  text-shadow: 0 0 6px rgba(255, 150, 80, 0.5);
+  margin-top: 0.2em;
+  margin-left: 0.4em;
+}
+.neon-sign .f1 { animation: flickA 3.2s infinite; }
+.neon-sign .f2 { animation: flickB 5.1s infinite; animation-delay: 0.6s; }
+
+@keyframes flickA {
+  0%, 18%, 22%, 24%, 60%, 100% { opacity: 1; }
+  19%, 23% { opacity: 0.25; text-shadow: none; }
+  61% { opacity: 0.4; }
+}
+@keyframes flickB {
+  0%, 41%, 43%, 89%, 91%, 100% { opacity: 1; }
+  42% { opacity: 0.2; text-shadow: none; }
+  90% { opacity: 0.5; }
+}
+
+/* SHOOTING STAR — upper right, fleeting */
+.shooting-star {
+  position: absolute;
+  top: 14%;
+  right: 18%;
+  width: 140px;
+  height: 1.5px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(234, 243, 255, 0.0) 10%,
+    rgba(234, 243, 255, 0.95) 55%,
+    var(--star-blue) 80%,
+    transparent 100%);
+  opacity: 0;
+  transform: rotate(22deg);
+  filter: blur(0.4px);
+  animation: shoot 11s infinite;
+  z-index: 2;
+  pointer-events: none;
+}
+.shooting-star::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--star-core), transparent 70%);
+  filter: blur(0.6px);
+}
+/* Residual glow visible even when static */
+.shooting-star-glow {
+  position: absolute;
+  top: 14%;
+  right: 18%;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, rgba(155, 223, 255, 0.08), transparent 70%);
+  transform: translate(30px, -30px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes shoot {
+  0% {
+    opacity: 0;
+    transform: translate(100px, -55px) rotate(22deg);
+    filter: blur(0.2px);
+  }
+  3% { opacity: 0.9; }
+  7% {
+    opacity: 0.15;
+    transform: translate(-180px, 95px) rotate(22deg);
+    filter: blur(2px);
+  }
+  9%, 100% { opacity: 0; }
+}
+
+/* HERO COPY + CTA — right side */
+.hero-copy {
+  position: absolute;
+  right: clamp(20px, 6vw, 72px);
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 440px;
   z-index: 5;
 }
-.brand span { color: var(--accent); }
-
 .hero-title {
-  position: relative;
-  text-align: center;
-  margin-bottom: 48px;
-  z-index: 2;
-  user-select: none;
-  -webkit-user-select: none;
-}
-.hero-title h1 {
-  font-size: clamp(28px, 5vw, 52px);
-  font-weight: 800;
+  font-size: clamp(26px, 3.8vw, 44px);
+  font-weight: 700;
+  line-height: 1.42;
+  margin-bottom: 18px;
+  color: var(--text);
   letter-spacing: 0.04em;
-  line-height: 1.3;
-  background: linear-gradient(120deg, #ffffff 0%, #38bdf8 60%, #f59e0b 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.3);
 }
-.hero-title p {
-  margin-top: 14px;
-  font-size: clamp(14px, 1.7vw, 18px);
+.hero-title .accent {
+  color: var(--star-blue);
+  font-weight: 700;
+}
+.hero-sub {
+  font-size: clamp(13px, 1.3vw, 16px);
   color: var(--text-dim);
+  margin-bottom: 36px;
+  letter-spacing: 0.1em;
+  line-height: 1.8;
 }
-
-/* ========= 3D SCENE ========= */
-.scene-wrap {
-  display: inline-block;
-  margin: 30px auto 10px;
-  will-change: transform;
-  /* JS applies translate() for the floating motion */
-}
-
-.scene {
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 30px;
+  border: 1px solid rgba(155, 223, 255, 0.5);
+  background: rgba(155, 223, 255, 0.06);
+  color: var(--star-core);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  border-radius: 2px;
   position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(.25, .8, .35, 1);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 0 18px rgba(155, 223, 255, 0.08);
+}
+.cta::before {
+  /* shooting-star-like light trail on hover */
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -60%;
+  width: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--star-core), var(--star-blue), transparent);
+  transform: translateY(-50%) rotate(-2deg);
+  transition: left 0.9s cubic-bezier(.3, .6, .2, 1);
+  filter: blur(0.5px);
+}
+.cta:hover,
+.cta:focus-visible {
+  background: rgba(155, 223, 255, 0.14);
+  border-color: rgba(155, 223, 255, 0.95);
+  box-shadow:
+    0 0 26px rgba(155, 223, 255, 0.35),
+    inset 0 0 18px rgba(155, 223, 255, 0.08);
+  outline: none;
+  color: #fff;
+}
+.cta:hover::before,
+.cta:focus-visible::before {
+  left: 110%;
+}
+.cta .arrow {
+  transition: transform 0.4s;
+  font-size: 18px;
+}
+.cta:hover .arrow { transform: translateX(4px); }
+
+/* ========================= CUBE STAGE (Docked ↔ Active) ========================= */
+.cube-backdrop {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(80, 50, 90, 0.4), rgba(10, 5, 20, 0.95)),
+    rgba(10, 5, 20, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.65s ease, visibility 0.65s;
+  z-index: 30;
+  cursor: pointer;
+}
+.cube-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cube-stage {
+  --stage-scale: 0.34;
+  --stage-tx: 0px;
+  --stage-ty: 0px;
+  position: fixed;
+  top: 24px;
+  right: 24px;
   width: var(--cube-size);
   height: var(--cube-size);
-  perspective: 800px;
-  cursor: grab;
-  z-index: 2;
+  z-index: 40;
+  cursor: pointer;
+  transform-origin: top right;
+  transform: translate(var(--stage-tx), var(--stage-ty)) scale(var(--stage-scale));
+  transition:
+    transform 0.85s cubic-bezier(.65, 0, .25, 1),
+    filter 0.5s;
+  filter: drop-shadow(0 4px 20px rgba(155, 223, 255, 0.2));
+}
+.cube-stage::before {
+  /* Glowing ring to suggest clickability when docked */
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border: 1px solid rgba(155, 223, 255, 0.25);
+  border-radius: 16px;
+  opacity: 1;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+.cube-stage::after {
+  content: 'MENU';
+  position: absolute;
+  bottom: -26px;
+  right: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: rgba(155, 223, 255, 0.6);
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.cube-stage:hover { filter: drop-shadow(0 6px 28px rgba(155, 223, 255, 0.45)); }
+.cube-stage:hover::before { border-color: rgba(155, 223, 255, 0.7); }
+
+.cube-stage.active {
+  --stage-scale: 1;
+  cursor: default;
+  filter: drop-shadow(0 10px 50px rgba(155, 223, 255, 0.25));
+}
+.cube-stage.active::before,
+.cube-stage.active::after { opacity: 0; }
+
+/* Close button (only visible when active) */
+.cube-close {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(155, 223, 255, 0.3);
+  color: var(--text);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s;
+  backdrop-filter: blur(8px);
+}
+.cube-close.show {
+  opacity: 1;
+  visibility: visible;
+}
+.cube-close:hover {
+  background: rgba(155, 223, 255, 0.2);
+  transform: rotate(90deg);
+  border-color: var(--star-blue);
+}
+
+/* ========================= 3D CUBE ========================= */
+.scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 900px;
   touch-action: none;
-  transition: transform 0.75s cubic-bezier(.7, 0, .2, 1), filter 0.5s ease;
-  transform: scale(1);
-  /* ドラッグ時の文字選択ハイライトを無効化 */
   user-select: none;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
 }
-.scene, .scene * {
-  user-select: none;
-  -webkit-user-select: none;
-}
-.scene:active { cursor: grabbing; }
-.scene.zooming {
-  transform: scale(1.18);
-  filter: brightness(1.12) saturate(1.1);
-}
+.scene, .scene * { user-select: none; -webkit-user-select: none; }
 
 .cube {
   position: relative;
@@ -148,41 +436,35 @@ html, body {
 .face {
   position: absolute;
   inset: 0;
-  /* visual styles moved to .face-panel (the "door") */
 }
-
-/* Interior glow revealed when the door opens */
 .face::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
-  border-radius: var(--radius);
+  border-radius: 14px;
   background:
-    radial-gradient(circle at 30% 50%, rgba(245, 158, 11, 0.55), transparent 65%),
-    radial-gradient(circle at 70% 50%, rgba(56, 189, 248, 0.35), transparent 60%);
+    radial-gradient(circle at 30% 50%, rgba(255, 184, 104, 0.55), transparent 65%),
+    radial-gradient(circle at 70% 50%, rgba(155, 223, 255, 0.35), transparent 60%);
   opacity: 0;
   transition: opacity 0.45s 0.2s ease-out;
   pointer-events: none;
   z-index: 0;
 }
-.face.opening::before {
-  opacity: 1;
-}
+.face.opening::before { opacity: 1; }
 
-/* .face-panel = the door that swings open */
 .face-panel {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--face-bg);
-  border: 2px solid var(--face-border);
-  border-radius: var(--radius);
+  background: rgba(18, 10, 30, 0.82);
+  border: 2px solid rgba(155, 223, 255, 0.4);
+  border-radius: 14px;
   backdrop-filter: blur(6px);
   box-shadow:
-    inset 0 0 40px rgba(56, 189, 248, 0.15),
-    0 10px 40px rgba(0, 0, 0, 0.5);
+    inset 0 0 40px rgba(155, 223, 255, 0.12),
+    0 10px 40px rgba(0, 0, 0, 0.55);
   transform-origin: left center;
   transform: rotateY(0deg);
   transition:
@@ -193,10 +475,10 @@ html, body {
   z-index: 1;
 }
 .face.active .face-panel {
-  border-color: var(--accent-2);
+  border-color: var(--neon-warm);
   box-shadow:
-    inset 0 0 60px rgba(245, 158, 11, 0.25),
-    0 12px 50px rgba(245, 158, 11, 0.35);
+    inset 0 0 60px rgba(255, 180, 100, 0.2),
+    0 12px 50px rgba(255, 180, 100, 0.3);
 }
 .face.opening .face-panel {
   transform: rotateY(-118deg);
@@ -204,51 +486,46 @@ html, body {
     -30px 0 60px rgba(0, 0, 0, 0.75),
     inset 40px 0 30px rgba(0, 0, 0, 0.45);
 }
-.face.opening .face-panel button {
-  pointer-events: none !important;
-}
+.face.opening .face-panel button { pointer-events: none !important; }
 
 .face button {
   font: inherit;
-  color: #f8fafc;
+  color: var(--text);
   background: transparent;
   border: none;
   padding: 10px 14px;
-  font-size: 22px;
+  font-size: clamp(15px, 1.6vw, 22px);
   font-weight: 800;
   letter-spacing: 0.08em;
   cursor: pointer;
-  pointer-events: auto;  /* default clickable; backface-visibility on panel hides back */
+  pointer-events: auto;
   backface-visibility: hidden;
-  /* 選択ハイライト無効化 */
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  /* 3D / embossed text — natural depth */
   text-shadow:
     0 1px 0 rgba(255, 255, 255, 0.15),
     0 2px 0 rgba(255, 255, 255, 0.08),
     0 3px 0 rgba(0, 0, 0, 0.35),
     0 5px 6px rgba(0, 0, 0, 0.5),
-    0 0 18px rgba(56, 189, 248, 0.25);
-  transition: transform 0.3s ease, text-shadow 0.3s ease, color 0.3s ease, letter-spacing 0.3s ease;
+    0 0 18px rgba(155, 223, 255, 0.25);
+  transition: transform 0.3s, text-shadow 0.3s, color 0.3s, letter-spacing 0.3s;
 }
 .face button:hover,
 .face button:focus-visible {
   transform: translateY(-2px) scale(1.05);
-  color: #ffffff;
+  color: #fff;
   letter-spacing: 0.12em;
   text-shadow:
     0 1px 0 rgba(255, 255, 255, 0.25),
     0 2px 0 rgba(255, 255, 255, 0.15),
     0 3px 0 rgba(0, 0, 0, 0.4),
     0 6px 10px rgba(0, 0, 0, 0.55),
-    0 0 22px rgba(245, 158, 11, 0.55);
+    0 0 22px rgba(255, 184, 104, 0.55);
   outline: none;
 }
 
-/* 6 face positions */
+/* Face positions */
 .face.front  { transform: translateZ(calc(var(--cube-size) / 2)); }
 .face.back   { transform: rotateY(180deg) translateZ(calc(var(--cube-size) / 2)); }
 .face.right  { transform: rotateY(90deg) translateZ(calc(var(--cube-size) / 2)); }
@@ -256,62 +533,28 @@ html, body {
 .face.top    { transform: rotateX(90deg) translateZ(calc(var(--cube-size) / 2)); }
 .face.bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube-size) / 2)); }
 
-/* ========= Hint / Controls ========= */
-.hint {
-  margin-top: 42px;
-  font-size: 13px;
-  color: var(--text-dim);
-  text-align: center;
-  z-index: 2;
-  position: relative;
-}
-.hint kbd {
-  background: rgba(255,255,255,0.08);
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  border: 1px solid rgba(255,255,255,0.15);
-  margin: 0 2px;
-}
+/* Disable face clicks when docked */
+.cube-stage:not(.active) .face button { pointer-events: none; }
 
-.rotate-toggle {
-  position: absolute;
-  top: 24px;
-  right: 28px;
-  background: rgba(255,255,255,0.08);
-  color: var(--text);
-  border: 1px solid rgba(255,255,255,0.2);
-  padding: 8px 14px;
-  border-radius: 999px;
-  cursor: pointer;
-  font-size: 13px;
-  z-index: 5;
-  transition: background 0.25s;
-}
-.rotate-toggle:hover { background: rgba(255,255,255,0.15); }
-
-/* ========= MODAL ========= */
+/* ========================= MODAL ========================= */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: var(--modal-bg);
-  backdrop-filter: blur(8px);
+  background: rgba(5, 2, 12, 0.92);
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s;
+  transition: opacity 0.3s, visibility 0.3s;
   z-index: 100;
 }
-.modal-overlay.open {
-  opacity: 1;
-  visibility: visible;
-}
+.modal-overlay.open { opacity: 1; visibility: visible; }
 .modal {
-  background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: linear-gradient(160deg, #1a0f2e 0%, #2a1840 100%);
+  border: 1px solid rgba(155, 223, 255, 0.3);
   border-radius: 18px;
   max-width: 640px;
   width: 100%;
@@ -320,27 +563,16 @@ html, body {
   padding: 40px 32px 32px;
   position: relative;
   transform: translateY(20px) scale(0.96);
-  transition: transform 0.35s cubic-bezier(.2,.8,.2,1);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  transition: transform 0.35s cubic-bezier(.2, .8, .2, 1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
 }
-.modal-overlay.open .modal {
-  transform: translateY(0) scale(1);
-}
-.modal h2 {
-  font-size: 26px;
-  margin-bottom: 18px;
-  color: var(--accent);
-  letter-spacing: 0.04em;
-}
-.modal p {
-  color: var(--text-dim);
-  font-size: 15px;
-  margin-bottom: 14px;
-}
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+.modal h2 { font-size: 26px; margin-bottom: 18px; color: var(--star-blue); letter-spacing: 0.04em; }
+.modal p { color: var(--text-dim); font-size: 15px; margin-bottom: 14px; }
 .modal .tag {
   display: inline-block;
-  background: rgba(245, 158, 11, 0.15);
-  color: var(--accent-2);
+  background: rgba(255, 180, 100, 0.15);
+  color: var(--neon-warm);
   padding: 4px 12px;
   border-radius: 999px;
   font-size: 12px;
@@ -354,8 +586,8 @@ html, body {
   right: 14px;
   width: 40px;
   height: 40px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 50%;
   color: var(--text);
   font-size: 20px;
@@ -363,98 +595,143 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.25s, transform 0.25s;
+  transition: all 0.25s;
 }
-.modal-close:hover,
-.modal-close:focus-visible {
-  background: var(--accent-2);
-  transform: rotate(90deg);
-  outline: none;
-}
+.modal-close:hover { background: var(--neon-warm); transform: rotate(90deg); }
 .modal-footer {
   margin-top: 20px;
   padding-top: 18px;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 13px;
   color: var(--text-dim);
 }
 .modal-footer .preview-note {
   display: inline-block;
-  background: rgba(14, 165, 233, 0.15);
-  color: var(--accent);
+  background: rgba(155, 223, 255, 0.15);
+  color: var(--star-blue);
   padding: 6px 12px;
   border-radius: 8px;
   margin-top: 6px;
 }
 
-/* ========= RESPONSIVE ========= */
-@media (max-width: 640px) {
-  :root { --cube-size: 200px; }
-  .brand { font-size: 15px; top: 18px; left: 18px; }
-  .rotate-toggle { top: 18px; right: 18px; font-size: 12px; padding: 6px 10px; }
-  .face button { font-size: 17px; padding: 8px 10px; }
-  .modal { padding: 36px 20px 24px; }
-  .modal h2 { font-size: 22px; }
+/* ========================= RESPONSIVE ========================= */
+@media (max-width: 768px) {
+  :root { --cube-size: min(260px, 80vw, 60vh); }
+  .neon-sign { top: 12%; left: 6%; font-size: clamp(42px, 14vw, 90px); }
+  .hero-copy {
+    right: 6vw;
+    left: 6vw;
+    max-width: none;
+    top: auto;
+    bottom: 8%;
+    transform: none;
+    text-align: right;
+  }
+  .cube-stage { top: 16px; right: 16px; }
+  .cube-stage::after { display: none; }
+  .cube-close { top: 16px; right: 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .shooting-star,
+  .neon-sign .f1,
+  .neon-sign .f2 { animation: none; }
   .cube { transition: none !important; }
-  .modal { transition: none !important; }
 }
 </style>
 </head>
 <body>
 
-<div class="brand">Sam<span>ple</span> 合同会社</div>
-<button id="rotate-toggle" class="rotate-toggle" aria-pressed="true">⏸ 自動回転ON</button>
+<section class="hero" aria-label="Sample合同会社 ヒーローセクション">
+  <!-- Background layers -->
+  <div class="stars" aria-hidden="true"></div>
+  <div class="shooting-star-glow" aria-hidden="true"></div>
+  <div class="shooting-star" aria-hidden="true"></div>
 
-<section class="hero" aria-label="ヒーローセクション">
-  <div class="hero-title">
-    <h1>資産の未来を、<br>設計する。</h1>
-    <p>Sample合同会社 — 東京発・不動産FPのプロフェッショナル</p>
+  <!-- City silhouette -->
+  <div class="city" aria-hidden="true">
+    <div class="building" style="left: 0%;   width: 8%;  height: 48%;"></div>
+    <div class="building" style="left: 7%;   width: 6%;  height: 72%;"></div>
+    <div class="building" style="left: 13%;  width: 9%;  height: 56%;"></div>
+    <div class="building" style="left: 22%;  width: 7%;  height: 82%;"></div>
+    <div class="building" style="left: 29%;  width: 5%;  height: 64%;"></div>
+    <div class="building" style="left: 34%;  width: 8%;  height: 70%;"></div>
+    <div class="building" style="left: 42%;  width: 6%;  height: 52%;"></div>
+    <div class="building" style="left: 48%;  width: 10%; height: 85%;"></div>
+    <div class="building" style="left: 58%;  width: 5%;  height: 46%;"></div>
+    <div class="building" style="left: 63%;  width: 7%;  height: 68%;"></div>
+    <div class="building" style="left: 70%;  width: 6%;  height: 58%;"></div>
+    <div class="building" style="left: 76%;  width: 9%;  height: 78%;"></div>
+    <div class="building" style="left: 85%;  width: 7%;  height: 50%;"></div>
+    <div class="building" style="left: 92%;  width: 8%;  height: 66%;"></div>
   </div>
 
-  <div class="scene-wrap">
-  <div id="hero-cube" class="scene" role="group" aria-label="3Dナビゲーションキューブ">
+  <!-- SAMPLE neon sign (left, tilted) -->
+  <div class="neon-sign" aria-hidden="true">
+    <span class="f1">S</span><span>A</span><span class="f2">M</span><span>P</span><span class="f1">L</span><span class="f2">E</span>
+    <span class="sub">// since 2021 — real estate fp</span>
+  </div>
+
+  <!-- Hero copy + CTA (right side) -->
+  <div class="hero-copy">
+    <h1 class="hero-title">
+      静寂の街角で、<br>
+      <span class="accent">次の一歩</span>を描く。
+    </h1>
+    <p class="hero-sub">
+      Sample合同会社 — 不動産FPのプロフェッショナル。<br>
+      取り残された景色の中から、あなたの未来を再設計します。
+    </p>
+    <a href="#contact" class="cta">
+      未来を設計する
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- Cube overlay (backdrop when active) -->
+<div class="cube-backdrop" id="cubeBackdrop" aria-hidden="true"></div>
+
+<!-- Close button (shown when cube is active) -->
+<button class="cube-close" id="cubeClose" aria-label="キューブメニューを閉じる">✕</button>
+
+<!-- The cube (docked top-right by default, expands to center on click) -->
+<div class="cube-stage" id="cubeStage" role="button" tabindex="0" aria-label="3Dメニューを開く">
+  <div class="scene" id="hero-cube" role="group" aria-label="3Dナビゲーションキューブ">
     <div class="cube" id="cube">
       <div class="face front" data-face="front">
         <div class="face-panel">
-          <button type="button" data-modal="company" aria-label="会社概要を見る">会社概要</button>
+          <button type="button" data-modal="company" aria-label="会社概要">会社概要</button>
         </div>
       </div>
       <div class="face back" data-face="back">
         <div class="face-panel">
-          <button type="button" data-modal="contact" aria-label="お問い合わせを見る">お問い合わせ</button>
+          <button type="button" data-modal="contact" aria-label="お問い合わせ">お問い合わせ</button>
         </div>
       </div>
       <div class="face right" data-face="right">
         <div class="face-panel">
-          <button type="button" data-modal="service" aria-label="サービスを見る">サービス</button>
+          <button type="button" data-modal="service" aria-label="サービス">サービス</button>
         </div>
       </div>
       <div class="face left" data-face="left">
         <div class="face-panel">
-          <button type="button" data-modal="product" aria-label="製品を見る">製品</button>
+          <button type="button" data-modal="product" aria-label="製品">製品</button>
         </div>
       </div>
       <div class="face top" data-face="top">
         <div class="face-panel">
-          <button type="button" data-modal="blog" aria-label="ブログを見る">ブログ</button>
+          <button type="button" data-modal="blog" aria-label="ブログ">ブログ</button>
         </div>
       </div>
       <div class="face bottom" data-face="bottom">
         <div class="face-panel">
-          <button type="button" data-modal="close" aria-label="トップへ戻る">トップ（閉じる）</button>
+          <button type="button" data-modal="close" aria-label="トップへ戻る">トップへ</button>
         </div>
       </div>
     </div>
   </div>
-  </div>
-
-  <p class="hint">
-    🖱️ ドラッグで回転 / <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> キー / 右上ボタンで自動回転ON/OFF / <kbd>ESC</kbd> で閉じる
-  </p>
-</section>
+</div>
 
 <!-- ======= MODAL ======= -->
 <div id="modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
@@ -471,22 +748,18 @@ html, body {
 
 <script>
 /* ============================================================
-   Modal-Preview Auto-Rotate Cube — Sample LLC (2026/4/22)
+   Dusk City Hero + Modal-Preview Auto-Rotate Cube — Sample LLC
    ============================================================ */
 (function () {
   'use strict';
 
   // ---------- Real page links (override modal preview) ----------
-  // 本物の遷移先ページが出来たら、ここに data-modal キーと URL を登録する。
-  // 登録されたキーは「扉が開く演出 → 実ページへ遷移」になる（モーダルは出ない）。
-  // 未登録のキーはモーダルプレビュー（サンプル）が表示される。
   const LINKS = {
-    // blog:    'https://newarc.jp/naviarc/',   ← テスト済みのためコメントアウト
+    // blog:    'https://newarc.jp/naviarc/',   // テスト済み、必要時に復活
     // company: '/company.html',
-    // service: '/service.html',
   };
 
-  // ---------- Data (Sample content) ----------
+  // ---------- Sample content ----------
   const CONTENT = {
     company: {
       tag: 'COMPANY',
@@ -496,12 +769,12 @@ html, body {
     contact: {
       tag: 'CONTACT',
       title: 'お問い合わせ',
-      body: `お問い合わせフォーム。資産運用、相続対策、不動産購入・売却、法人向け資産コンサルティングなど、あらゆるご相談を承ります。初回60分無料相談を実施中。オンライン面談可。お電話・メール・本サイトのフォームからお気軽にどうぞ。<br><br>📧 info@sample.example.jp<br>📞 03-0000-0000<br>🕐 平日 10:00 – 18:00`
+      body: `お問い合わせフォーム。資産運用、相続対策、不動産購入・売却、法人向け資産コンサルティングなど、あらゆるご相談を承ります。初回60分無料相談を実施中。オンライン面談可。<br><br>📧 info@sample.example.jp<br>📞 03-0000-0000<br>🕐 平日 10:00 – 18:00`
     },
     service: {
       tag: 'SERVICE',
       title: 'サービス',
-      body: `不動産FPサービス一覧。① ライフプラン策定とキャッシュフロー分析、② 収益不動産の選定・購入サポート、③ 相続・事業承継プランニング、④ 法人向けCRE（企業不動産）戦略、⑤ 出口戦略・売却コンサル。金融商品販売に依存しないFEE ONLY型で、お客様の利益のみに忠実な提案をお約束します。`
+      body: `不動産FPサービス一覧。① ライフプラン策定とキャッシュフロー分析、② 収益不動産の選定・購入サポート、③ 相続・事業承継プランニング、④ 法人向けCRE戦略、⑤ 出口戦略・売却コンサル。FEE ONLY型で、お客様の利益のみに忠実な提案をお約束します。`
     },
     product: {
       tag: 'PRODUCT',
@@ -512,42 +785,96 @@ html, body {
       tag: 'BLOG',
       title: 'ブログ',
       body: `Sample Insights。最新記事：「2026年の住宅ローン金利動向と借換えタイミング」「区分マンション vs 一棟アパート：税引後CFで比較」「相続時精算課税の改正ポイント」など、不動産FPの実務目線で週1本更新。メルマガ登録で新着を見逃しません。`
-    },
-    close: null // bottom face closes / scrolls
+    }
   };
 
   // ---------- Elements ----------
   const scene = document.getElementById('hero-cube');
-  const sceneWrap = document.querySelector('.scene-wrap');
   const cube = document.getElementById('cube');
+  const stage = document.getElementById('cubeStage');
+  const backdrop = document.getElementById('cubeBackdrop');
+  const cubeClose = document.getElementById('cubeClose');
   const faces = Array.from(document.querySelectorAll('.face'));
   const modal = document.getElementById('modal');
   const modalTitle = document.getElementById('modal-title');
   const modalBody = document.getElementById('modal-body');
   const modalTag = document.getElementById('modal-tag');
-  const modalClose = document.getElementById('modal-close');
-  const rotateToggle = document.getElementById('rotate-toggle');
+  const modalCloseBtn = document.getElementById('modal-close');
 
   // ---------- State ----------
   let rotY = 0;
   let rotX = 20;
   let rotZ = 0;
-  let baseRotX = 20;  // X軸の基準値（ドラッグで更新、オシレーションはこれに加算）
+  let baseRotX = 20;
   let auto = true;
   let dragging = false;
-  let dragStartX = 0;
-  let dragStartY = 0;
-  let rotStartY = 0;
-  let rotStartX = 0;
-  let tickCount = 0;  // rotation phase (frozen during drag)
-  let floatTime = 0;  // floating phase (always advances)
+  let pointerDown = false;
+  let activePointerId = null;
+  let dragStartX = 0, dragStartY = 0;
+  let rotStartY = 0, rotStartX = 0;
+  let tickCount = 0;
+  let floatTime = 0;
+  let openingFace = null;
+  let cubeActive = false;
+  const DRAG_THRESHOLD = 6;
 
-  // LocalStorage: remember rotation preference
-  try {
-    const saved = localStorage.getItem('sample_auto_rotate');
-    if (saved === 'false') auto = false;
-  } catch (e) { /* no-op */ }
-  updateToggleLabel();
+  // ---------- Expand / Dock ----------
+  function computeStageOffset() {
+    // target: cube centered at viewport center
+    // origin: top-right; at docked scale we offset to top-right corner
+    // When active: translate so cube center = viewport center
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const size = stage.offsetWidth; // current cube (pre-scale) size
+    // When active scale=1, top-right corner of cube (pre-transform) is at (vw - 24, 24)
+    // We want cube bounding box to be centered. Cube extends left and down from top-right origin.
+    // So we need top-right corner at (vw/2 + size/2, vh/2 - size/2)
+    const tx = -vw / 2 + size / 2 + 24;
+    const ty = vh / 2 - size / 2 - 24;
+    stage.style.setProperty('--stage-tx', tx + 'px');
+    stage.style.setProperty('--stage-ty', ty + 'px');
+  }
+
+  function expandCube() {
+    if (cubeActive) return;
+    cubeActive = true;
+    computeStageOffset();
+    stage.classList.add('active');
+    backdrop.classList.add('active');
+    cubeClose.classList.add('show');
+    stage.setAttribute('aria-label', '3Dメニュー（展開中）');
+    cubeClose.focus();
+  }
+
+  function dockCube() {
+    if (!cubeActive) return;
+    cubeActive = false;
+    stage.classList.remove('active');
+    backdrop.classList.remove('active');
+    cubeClose.classList.remove('show');
+    stage.setAttribute('aria-label', '3Dメニューを開く');
+  }
+
+  // Click stage to expand
+  stage.addEventListener('click', (e) => {
+    if (!cubeActive) {
+      e.stopPropagation();
+      expandCube();
+    }
+  });
+  stage.addEventListener('keydown', (e) => {
+    if (!cubeActive && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      expandCube();
+    }
+  });
+
+  backdrop.addEventListener('click', dockCube);
+  cubeClose.addEventListener('click', dockCube);
+
+  window.addEventListener('resize', () => {
+    if (cubeActive) computeStageOffset();
+  });
 
   // ---------- Render ----------
   function render() {
@@ -555,14 +882,10 @@ html, body {
     updateFrontFace();
   }
 
-  // Determine which face is closest to camera
   function updateFrontFace() {
-    // Normalize rotY into [0, 360)
     let y = ((rotY % 360) + 360) % 360;
     let x = ((rotX % 360) + 360) % 360;
-
     let frontName = 'front';
-    // Top/bottom override when tilt is strong
     if (x > 45 && x < 135) frontName = 'bottom';
     else if (x > 225 && x < 315) frontName = 'top';
     else {
@@ -571,74 +894,54 @@ html, body {
       else if (y >= 135 && y < 225) frontName = 'back';
       else if (y >= 225 && y < 315) frontName = 'right';
     }
-
-    faces.forEach(f => {
-      const isFront = f.dataset.face === frontName;
-      f.classList.toggle('active', isFront);
-      // pointer-events はCSSのbackface-visibilityで裏側を自動遮断するため、ここでは操作しない
-    });
+    faces.forEach(f => f.classList.toggle('active', f.dataset.face === frontName));
   }
 
-  // ---------- Animation loop (multi-axis float + drift) ----------
+  // ---------- Animation loop ----------
   function tick() {
-    // 位置：画面内を浮遊（常に進行、ドアが開いている間は静止）
+    // Float (subtle drift even when docked, pause during opening)
     if (!openingFace) {
       floatTime += 1;
-      // 画面幅に応じて振幅を調整（モバイルでは小さく）
-      const w = window.innerWidth;
-      const ampX = Math.min(90, Math.max(30, w * 0.12));  // 30〜90px
-      const ampY = Math.min(55, Math.max(20, w * 0.06));  // 20〜55px
-      // 異なる周期でLissajous風の漂い
-      const floatX = Math.sin(floatTime * 0.0032) * ampX;
-      const floatY = Math.sin(floatTime * 0.0024 + 1.3) * ampY;
-      if (sceneWrap) {
-        sceneWrap.style.transform = `translate(${floatX.toFixed(2)}px, ${floatY.toFixed(2)}px)`;
-      }
+      const vw = window.innerWidth;
+      const ampX = Math.min(18, Math.max(6, vw * 0.02));
+      const ampY = Math.min(12, Math.max(4, vw * 0.012));
+      const fx = Math.sin(floatTime * 0.0032) * ampX;
+      const fy = Math.sin(floatTime * 0.0024 + 1.3) * ampY;
+      // tiny float applied to the cube itself (not stage, so it doesn't fight dock/active transform)
+      cube.style.filter = `drop-shadow(${fx.toFixed(1)}px ${fy.toFixed(1)}px 10px rgba(155,223,255,0.2))`;
     }
-    // 回転：auto時のみ更新（baseRotXにオシレーションを加算することでドラッグ位置を尊重）
     if (auto && !dragging) {
-      rotY += 0.35;                                         // Y軸連続回転
-      rotX = baseRotX + Math.sin(tickCount * 0.008) * 10;   // X軸：基準値±10°で揺らぐ
-      rotZ = Math.sin(tickCount * 0.005) * 6;               // Z軸 ±6°
+      rotY += 0.35;
+      rotX = baseRotX + Math.sin(tickCount * 0.008) * 10;
+      rotZ = Math.sin(tickCount * 0.005) * 6;
       tickCount++;
     }
     render();
     requestAnimationFrame(tick);
   }
 
-  // ---------- Drag (with tap-vs-drag distinction) ----------
-  const DRAG_THRESHOLD = 6; // px — 6px以上動いたらドラッグ扱い。それ未満はクリック扱い
-  let pointerDown = false;
-  let activePointerId = null;
-
+  // ---------- Drag (active state only) ----------
   function onPointerDown(e) {
+    if (!cubeActive) return;
     pointerDown = true;
-    dragging = false; // まだドラッグ確定ではない
+    dragging = false;
     activePointerId = e.pointerId;
     dragStartX = e.clientX;
     dragStartY = e.clientY;
     rotStartY = rotY;
     rotStartX = rotX;
-    // 押下と同時に自動回転を停止（クリック中に面が動かないように）
-    if (auto) {
-      auto = false;
-      updateToggleLabel();
-    }
+    if (auto) auto = false;
   }
   function onPointerMove(e) {
-    if (!pointerDown) return;
+    if (!pointerDown || !cubeActive) return;
     const dx = e.clientX - dragStartX;
     const dy = e.clientY - dragStartY;
-    // 閾値を超えたら初めてドラッグ開始
     if (!dragging && Math.hypot(dx, dy) > DRAG_THRESHOLD) {
       dragging = true;
-      auto = false;
-      updateToggleLabel();
       try { scene.setPointerCapture && scene.setPointerCapture(activePointerId); } catch(e) {}
     }
     if (dragging) {
       rotY = rotStartY + dx * 0.5;
-      // ±90°まで自由にドラッグ可能（top/bottom面も正面に出せる）
       rotX = Math.max(-90, Math.min(90, rotStartX - dy * 0.3));
     }
   }
@@ -646,29 +949,14 @@ html, body {
     pointerDown = false;
     if (dragging) {
       dragging = false;
-      // baseRotX を現在位置に更新することで、auto再開時のスナップを防ぐ
       baseRotX = rotX - Math.sin(tickCount * 0.008) * 10;
-      // 自動回転は再開しない（ユーザーの位置を尊重）
     }
     activePointerId = null;
   }
-  // scheduleResume は廃止：ユーザーが明示的にトグルするまで現状維持
-
   scene.addEventListener('pointerdown', onPointerDown);
   window.addEventListener('pointermove', onPointerMove);
   window.addEventListener('pointerup', onPointerUp);
   window.addEventListener('pointercancel', onPointerUp);
-
-  // ---------- Hover: pause auto-rotate while aiming ----------
-  scene.addEventListener('mouseenter', () => {
-    // ホバー中は自動回転を停止（ドラッグ中は既にauto=false）
-    if (auto) {
-      auto = false;
-      updateToggleLabel();
-    }
-  });
-  // mouseleave では再開しない：ユーザーがドラッグや操作をしていた場合、
-  // その位置のまま止まっていた方がクリックしやすい。再開は右上のボタンで。
 
   // ---------- Keyboard ----------
   window.addEventListener('keydown', (e) => {
@@ -676,75 +964,50 @@ html, body {
       if (e.key === 'Escape') closeModal();
       return;
     }
-    const updateBase = () => {
-      auto = false;
-      updateToggleLabel();
-      baseRotX = rotX - Math.sin(tickCount * 0.008) * 10;
-    };
+    if (cubeActive && e.key === 'Escape') { dockCube(); return; }
+    if (!cubeActive) return;
+    const updateBase = () => { auto = false; baseRotX = rotX - Math.sin(tickCount * 0.008) * 10; };
     if (e.key === 'ArrowRight') { rotY += 90; updateBase(); }
     else if (e.key === 'ArrowLeft') { rotY -= 90; updateBase(); }
     else if (e.key === 'ArrowUp') { rotX = Math.max(-90, rotX - 15); updateBase(); }
     else if (e.key === 'ArrowDown') { rotX = Math.min(90, rotX + 15); updateBase(); }
-    else if (e.key === 'Escape') closeModal();
   });
 
   // ---------- Door-opening transition ----------
-  let openingFace = null;
-  const OPEN_DURATION = 650; // ms — syncs with CSS transition
+  const OPEN_DURATION = 650;
 
   function triggerDoor(face, onDone) {
     if (openingFace) return;
     openingFace = face;
     auto = false;
-    updateToggleLabel();
-    scene.classList.add('zooming');
     face.classList.add('opening');
-    // Disable button during anim to prevent double-click
-    const btn = face.querySelector('button');
-    if (btn) btn.style.pointerEvents = 'none';
     setTimeout(onDone, OPEN_DURATION);
   }
-
   function closeDoor() {
     if (!openingFace) return;
     openingFace.classList.remove('opening');
-    scene.classList.remove('zooming');
     openingFace = null;
-    // Resume auto-rotate per saved preference
-    try {
-      const saved = localStorage.getItem('sample_auto_rotate');
-      if (saved !== 'false') {
-        auto = true;
-        updateToggleLabel();
-      }
-    } catch (e) { /* no-op */ }
   }
 
-  // ---------- Button clicks → open door → modal ----------
+  // ---------- Face clicks ----------
   document.querySelectorAll('.face button').forEach(btn => {
     btn.addEventListener('click', (e) => {
+      if (!cubeActive) return; // ignore when docked (stage click handles expand)
       e.stopPropagation();
       const face = btn.closest('.face');
       const key = btn.dataset.modal;
 
       if (!key || key === 'close') {
-        // bottom face: open door briefly, then scroll top & close
         triggerDoor(face, () => {
           window.scrollTo({ top: 0, behavior: 'smooth' });
-          setTimeout(closeDoor, 450);
+          setTimeout(() => { closeDoor(); dockCube(); }, 450);
         });
         return;
       }
-
-      // 本物の遷移先URLが登録されている場合はそこへ遷移
       if (LINKS[key]) {
-        triggerDoor(face, () => {
-          window.location.href = LINKS[key];
-        });
+        triggerDoor(face, () => { window.location.href = LINKS[key]; });
         return;
       }
-
-      // それ以外はモーダルプレビュー
       triggerDoor(face, () => openModal(key));
     });
   });
@@ -757,31 +1020,15 @@ html, body {
     modalBody.innerHTML = `<p>${data.body}</p>`;
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
-    modalClose.focus();
+    modalCloseBtn.focus();
   }
-
   function closeModal() {
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
-    // Door swings shut after modal fades out
     setTimeout(closeDoor, 250);
   }
-
-  modalClose.addEventListener('click', closeModal);
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
-
-  // ---------- Auto-rotate toggle ----------
-  rotateToggle.addEventListener('click', () => {
-    auto = !auto;
-    try { localStorage.setItem('sample_auto_rotate', auto ? 'true' : 'false'); } catch(e) {}
-    updateToggleLabel();
-  });
-  function updateToggleLabel() {
-    rotateToggle.textContent = auto ? '⏸ 自動回転ON' : '▶ 自動回転OFF';
-    rotateToggle.setAttribute('aria-pressed', auto ? 'true' : 'false');
-  }
+  modalCloseBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
   // ---------- Start ----------
   render();
