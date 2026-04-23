@@ -28,8 +28,11 @@
   --cube-size:    min(320px, 72vw, 72vh);
 }
 
+html {
+  scroll-behavior: smooth;
+}
 html, body {
-  height: 100%;
+  min-height: 100%;
   font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", system-ui, sans-serif;
   background: var(--sky-top);
   color: var(--text);
@@ -754,6 +757,228 @@ html, body {
   margin-top: 6px;
 }
 
+/* ========================= CHOICES SECTION (3 glowing doorways) ========================= */
+.choices {
+  position: relative;
+  min-height: 100vh;
+  padding: clamp(80px, 10vw, 140px) 20px clamp(160px, 14vw, 200px);
+  background:
+    radial-gradient(ellipse at 50% 15%, rgba(40, 22, 55, 0.45), transparent 65%),
+    linear-gradient(180deg, #06020C 0%, #080410 50%, #020104 100%);
+  overflow: hidden;
+  isolation: isolate;
+}
+.choices::before {
+  /* Distant haze near the floor */
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background: radial-gradient(ellipse at 50% 100%, rgba(20, 10, 30, 0.7), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.choices-inner {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  z-index: 2;
+}
+.choices-title {
+  text-align: center;
+  font-size: clamp(22px, 3.4vw, 36px);
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  color: rgba(200, 190, 170, 0.8);
+  margin-bottom: 14px;
+  text-shadow: 0 0 30px rgba(0,0,0,0.9);
+}
+.choices-sub {
+  text-align: center;
+  font-size: clamp(12px, 1.2vw, 14px);
+  color: rgba(150, 140, 120, 0.7);
+  letter-spacing: 0.25em;
+  margin-bottom: clamp(80px, 11vw, 130px);
+}
+
+.door-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: clamp(40px, 7vw, 120px);
+  flex-wrap: wrap;
+  transition: filter 0.5s;
+}
+/* When hovering any door, dim the rest so focus lands on the chosen one */
+.door-row:hover .door { filter: brightness(0.48) saturate(0.6); }
+
+.door {
+  position: relative;
+  width: clamp(140px, 14vw, 180px);
+  height: clamp(240px, 24vw, 320px);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  --door-color: #fff;
+  --door-rgb: 255, 255, 255;
+  transition:
+    filter 0.6s cubic-bezier(.25,.8,.35,1),
+    transform 0.7s cubic-bezier(.25,.8,.35,1);
+}
+.door--green { --door-color: #7BE8A0; --door-rgb: 123, 232, 160; }
+.door--blue  { --door-color: #7AAEFF; --door-rgb: 122, 174, 255; }
+.door--red   { --door-color: #FF5262; --door-rgb: 255, 82, 98; }
+
+/* Building wall the doorway is cut into */
+.door::before {
+  content: '';
+  position: absolute;
+  top: -70px;
+  bottom: -60px;
+  left: -55px;
+  right: -55px;
+  background: linear-gradient(180deg, #0A060F 0%, #050208 100%);
+  box-shadow:
+    inset 0 0 80px rgba(0,0,0,0.95),
+    inset 0 2px 1px rgba(255,255,255,0.025);
+  z-index: -2;
+}
+
+/* The glowing doorway (arched at top) */
+.door-light {
+  position: absolute;
+  inset: 0;
+  border-radius: 48% 48% 3% 3% / 32% 32% 3% 3%;
+  background:
+    radial-gradient(ellipse 110% 65% at 50% 28%,
+      var(--door-color) 0%,
+      rgba(var(--door-rgb), 0.5) 22%,
+      rgba(var(--door-rgb), 0.18) 45%,
+      rgba(0,0,0,0.6) 72%,
+      #010103 100%);
+  box-shadow:
+    inset 0 3px 12px rgba(var(--door-rgb), 0.8),
+    inset 0 -30px 50px rgba(0,0,0,0.85),
+    0 0 25px rgba(var(--door-rgb), 0.28),
+    0 0 70px rgba(var(--door-rgb), 0.14);
+  transition: all 0.7s cubic-bezier(.25,.8,.35,1);
+  overflow: hidden;
+}
+/* A soft vertical light bleed suggesting an interior lamp */
+.door-light::after {
+  content: '';
+  position: absolute;
+  inset: 22% 38% 12% 38%;
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(var(--door-rgb), 0.4) 40%,
+    transparent 100%);
+  filter: blur(7px);
+  opacity: 0.55;
+  transition: opacity 0.6s, inset 0.6s;
+}
+
+/* Light pool on the floor in front of the doorway */
+.door-floor {
+  position: absolute;
+  bottom: -70px;
+  left: -55%;
+  right: -55%;
+  height: 90px;
+  background: radial-gradient(ellipse at 50% 0%,
+    rgba(var(--door-rgb), 0.45) 0%,
+    rgba(var(--door-rgb), 0.18) 40%,
+    transparent 75%);
+  filter: blur(10px);
+  pointer-events: none;
+  opacity: 0.75;
+  transition: opacity 0.6s, transform 0.6s;
+  transform-origin: center top;
+}
+
+/* Label below each door */
+.door-label {
+  position: absolute;
+  bottom: -112px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+  text-align: center;
+}
+.door-word {
+  display: block;
+  font-size: clamp(17px, 1.8vw, 22px);
+  font-weight: 300;
+  letter-spacing: 0.55em;
+  color: rgba(255, 255, 255, 0.55);
+  padding-left: 0.55em;
+  transition: color 0.4s, letter-spacing 0.4s, text-shadow 0.4s;
+}
+.door-romaji {
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  color: rgba(255, 255, 255, 0.28);
+  margin-top: 7px;
+  transition: color 0.4s;
+}
+
+/* FOCUS state — the chosen door intensifies */
+.door:hover,
+.door:focus-visible {
+  filter: brightness(1.35) !important;
+  transform: translateY(-8px);
+  outline: none;
+}
+.door:hover .door-light,
+.door:focus-visible .door-light {
+  box-shadow:
+    inset 0 4px 18px rgba(var(--door-rgb), 1),
+    inset 0 -18px 38px rgba(0,0,0,0.6),
+    0 0 60px rgba(var(--door-rgb), 0.8),
+    0 0 140px rgba(var(--door-rgb), 0.45);
+}
+.door:hover .door-light::after,
+.door:focus-visible .door-light::after {
+  opacity: 1;
+  inset: 16% 34% 8% 34%;
+}
+.door:hover .door-floor,
+.door:focus-visible .door-floor {
+  opacity: 1;
+  transform: scaleY(1.25) scaleX(1.1);
+}
+.door:hover .door-word,
+.door:focus-visible .door-word {
+  color: var(--door-color);
+  letter-spacing: 0.65em;
+  text-shadow: 0 0 18px rgba(var(--door-rgb), 0.6);
+}
+.door:hover .door-romaji,
+.door:focus-visible .door-romaji {
+  color: rgba(var(--door-rgb), 0.85);
+}
+
+/* Scroll-reveal fade-in */
+.choices .choices-title,
+.choices .choices-sub,
+.choices .door {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1.1s ease, transform 1.1s cubic-bezier(.2,.7,.3,1);
+}
+.choices.revealed .choices-title { opacity: 0.85; transform: translateY(0); transition-delay: 0.05s; }
+.choices.revealed .choices-sub   { opacity: 0.7;  transform: translateY(0); transition-delay: 0.25s; }
+.choices.revealed .door          { opacity: 1;    transform: translateY(0); }
+.choices.revealed .door--green   { transition-delay: 0.45s; }
+.choices.revealed .door--blue    { transition-delay: 0.65s; }
+.choices.revealed .door--red     { transition-delay: 0.85s; }
+
 /* ========================= RESPONSIVE ========================= */
 @media (max-width: 768px) {
   :root { --cube-size: min(260px, 80vw, 60vh); }
@@ -770,6 +995,15 @@ html, body {
   .cube-stage { top: 16px; right: 16px; }
   .cube-stage::after { display: none; }
   .cube-close { top: 16px; right: 16px; }
+  .door-row {
+    flex-direction: column;
+    gap: 140px;
+    align-items: center;
+  }
+  .door {
+    width: 150px;
+    height: 250px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -811,23 +1045,52 @@ html, body {
     <span class="mount mount-l"></span>
     <span class="mount mount-r"></span>
     <span class="f1">S</span><span>A</span><span class="f2">M</span><span>P</span><span class="f1">L</span><span class="f2">E</span>
-    <span class="sub">// since 2021 — real estate fp</span>
+    <span class="sub">// since 1984〜</span>
   </div>
 
-  <!-- Hero copy + CTA (right side) -->
+  <!-- Hero copy (right side) -->
   <div class="hero-copy">
     <h1 class="hero-title">
       静寂の街角で、<br>
       <span class="accent">次の一歩</span>を描く。
     </h1>
-    <p class="hero-sub">
-      Sample合同会社 — 不動産FPのプロフェッショナル。<br>
-      取り残された景色の中から、あなたの未来を再設計します。
-    </p>
-    <a href="#contact" class="cta">
-      未来を設計する
-      <span class="arrow">→</span>
-    </a>
+  </div>
+</section>
+
+<!-- ===== CHOICES SECTION: Three glowing doorways ===== -->
+<section class="choices" id="choices" aria-labelledby="choices-title">
+  <div class="choices-inner">
+    <h2 class="choices-title" id="choices-title">あなたはどの家に帰りますか。</h2>
+    <p class="choices-sub">一歩踏み出した先に、別の暮らしがある。</p>
+
+    <div class="door-row" role="group" aria-label="3つの光">
+      <button type="button" class="door door--green" data-modal="green" aria-label="希望 — HOPE">
+        <span class="door-light" aria-hidden="true"></span>
+        <span class="door-floor" aria-hidden="true"></span>
+        <span class="door-label">
+          <span class="door-word">希望</span>
+          <span class="door-romaji">HOPE — GREEN</span>
+        </span>
+      </button>
+
+      <button type="button" class="door door--blue" data-modal="blue" aria-label="静寂 — STILLNESS">
+        <span class="door-light" aria-hidden="true"></span>
+        <span class="door-floor" aria-hidden="true"></span>
+        <span class="door-label">
+          <span class="door-word">静寂</span>
+          <span class="door-romaji">STILL — BLUE</span>
+        </span>
+      </button>
+
+      <button type="button" class="door door--red" data-modal="red" aria-label="情熱 — PASSION">
+        <span class="door-light" aria-hidden="true"></span>
+        <span class="door-floor" aria-hidden="true"></span>
+        <span class="door-label">
+          <span class="door-word">情熱</span>
+          <span class="door-romaji">PASSION — RED</span>
+        </span>
+      </button>
+    </div>
   </div>
 </section>
 
@@ -929,6 +1192,22 @@ html, body {
       tag: 'BLOG',
       title: 'ブログ',
       body: `Sample Insights。最新記事：「2026年の住宅ローン金利動向と借換えタイミング」「区分マンション vs 一棟アパート：税引後CFで比較」「相続時精算課税の改正ポイント」など、不動産FPの実務目線で週1本更新。メルマガ登録で新着を見逃しません。`
+    },
+    // --- Three Doors ---
+    green: {
+      tag: 'HOPE — GREEN',
+      title: '希望の家 — 成長を選ぶ',
+      body: `未来に向けて資産を積み上げる家。株式・成長不動産・事業投資を軸に、複利の力を最大限に活かすポートフォリオ設計。ボラティリティを受け入れながら、10年・20年先の自由度を広げていく道です。<br><br>向いている方：若手〜中堅世代、子育て世帯、起業家志向、長期視野で資産形成したい方。`
+    },
+    blue: {
+      tag: 'STILL — BLUE',
+      title: '静寂の家 — 安定を選ぶ',
+      body: `守りを固める家。インフレ耐性のある実物資産、保険、キャッシュフロー型不動産を中心に、嵐の日も眠れるバランスシート。派手さはなくとも、長く穏やかに暮らしを支える設計です。<br><br>向いている方：退職前後の世代、安定収入を重視する方、資産を「減らさない」ことを最優先する方。`
+    },
+    red: {
+      tag: 'PASSION — RED',
+      title: '情熱の家 — 継承を選ぶ',
+      body: `家族と記憶を残す家。事業承継、不動産の世代間移転、相続設計を通じて、大切な人に想いと資産を渡していく。税負担を最適化しつつ、次世代が暮らしやすい形で引き継ぐ戦略です。<br><br>向いている方：事業オーナー、多世代世帯、大切な資産を次世代に残したい方、家族の物語を守りたい方。`
     }
   };
 
@@ -1180,6 +1459,32 @@ html, body {
   }
   modalCloseBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+  // ---------- Choice Doors (Green / Blue / Red) ----------
+  document.querySelectorAll('.door[data-modal]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key = btn.dataset.modal;
+      if (CONTENT[key]) openModal(key);
+    });
+  });
+
+  // ---------- Scroll-reveal for the Choices section ----------
+  const choicesSection = document.getElementById('choices');
+  if (choicesSection && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.18 });
+    io.observe(choicesSection);
+  } else if (choicesSection) {
+    // Fallback: show immediately on older browsers
+    choicesSection.classList.add('revealed');
+  }
 
   // ---------- Start ----------
   render();
