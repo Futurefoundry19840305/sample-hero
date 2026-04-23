@@ -152,7 +152,7 @@ html, body {
   z-index: -2;
   pointer-events: none;
 }
-/* Rotating neon gradient frame around the sign */
+/* Marquee bulbs colored by a rotating neon conic-gradient */
 @property --neon-angle {
   syntax: '<angle>';
   inherits: false;
@@ -163,47 +163,57 @@ html, body {
   position: absolute;
   inset: -10px;
   border-radius: 16px;
-  padding: 5px;
-  background:
-    conic-gradient(
-      from var(--neon-angle),
-      #FF4DA6 0%,
-      #FFB366 12%,
-      #FFE48A 22%,
-      #FF7038 33%,
-      #C857FF 45%,
-      #62E4FF 56%,
-      #4DE2A6 67%,
-      #FFD24D 78%,
-      #FF6090 88%,
-      #FF4DA6 100%
-    );
-  /* Show gradient ONLY in the border ring (mask out the inside) */
+  /* Background = full rotating rainbow (the color source for each bulb) */
+  background: conic-gradient(
+    from var(--neon-angle) at 50% 50%,
+    #FF4DA6 0%,
+    #FFB366 11%,
+    #FFE48A 22%,
+    #FF7038 33%,
+    #C857FF 44%,
+    #62E4FF 55%,
+    #4DE2A6 66%,
+    #FFD24D 77%,
+    #FF6090 88%,
+    #FF4DA6 100%
+  );
+  /* Mask: 4 rows of bulb dots along each edge.
+     Each bulb takes the underlying conic color where it sits. */
   -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
+    radial-gradient(circle, #000 30%, transparent 55%) repeat-x left top    / 18px 14px,
+    radial-gradient(circle, #000 30%, transparent 55%) repeat-x left bottom / 18px 14px,
+    radial-gradient(circle, #000 30%, transparent 55%) repeat-y left top    / 14px 18px,
+    radial-gradient(circle, #000 30%, transparent 55%) repeat-y right top   / 14px 18px;
           mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-          mask-composite: exclude;
+    radial-gradient(circle, #000 30%, transparent 55%) repeat-x left top    / 18px 14px,
+    radial-gradient(circle, #000 30%, transparent 55%) repeat-x left bottom / 18px 14px,
+    radial-gradient(circle, #000 30%, transparent 55%) repeat-y left top    / 14px 18px,
+    radial-gradient(circle, #000 30%, transparent 55%) repeat-y right top   / 14px 18px;
   animation:
     neonSpin 4.5s linear infinite,
-    frameFlicker 5.3s infinite;
+    framePulse 5.3s ease-in-out infinite;
   filter:
-    drop-shadow(0 0 4px rgba(255, 180, 100, 0.85))
-    drop-shadow(0 0 12px rgba(255, 110, 60, 0.65))
-    drop-shadow(0 0 26px rgba(200, 90, 255, 0.4));
+    drop-shadow(0 0 3px rgba(255, 220, 180, 0.95))
+    drop-shadow(0 0 10px rgba(255, 130, 90, 0.7))
+    drop-shadow(0 0 22px rgba(200, 110, 255, 0.45));
   z-index: -1;
   pointer-events: none;
 }
 @keyframes neonSpin {
   to { --neon-angle: 360deg; }
 }
-@keyframes frameFlicker {
-  0%, 45%, 48%, 80%, 82%, 100% { opacity: 1; }
-  46%, 47% { opacity: 0.4; }
-  81% { opacity: 0.65; }
+/* Combined pulse + flicker: gentle breathing with occasional dim flickers */
+@keyframes framePulse {
+  0%     { opacity: 0.9; }
+  25%    { opacity: 1;   }
+  45%    { opacity: 0.95;}
+  46%    { opacity: 0.4; }
+  47%    { opacity: 0.95;}
+  60%    { opacity: 1;   }
+  80%    { opacity: 0.92;}
+  81%    { opacity: 0.6; }
+  82%    { opacity: 0.95;}
+  100%   { opacity: 0.9; }
 }
 
 /* Mounting brackets — "持ち手" poles holding the sign from above */
