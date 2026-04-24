@@ -449,7 +449,7 @@ html, body {
 .hero {
   height: 100vh;
   min-height: 560px;
-  background: #1a1208;
+  background: #87c5e8;
 }
 .hero::before, .hero::after { display: none !important; }
 #wt-3d, #wt-sprites {
@@ -467,8 +467,7 @@ html, body {
   z-index: 2;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 140% 70% at 50% 100%, transparent 35%, rgba(20, 10, 0, 0.55) 75%, rgba(10, 5, 0, 0.92) 100%),
-    radial-gradient(ellipse 160% 65% at 50% 0%, rgba(80, 45, 20, 0.35) 0%, transparent 55%);
+    radial-gradient(ellipse 140% 60% at 50% 100%, transparent 55%, rgba(60, 38, 20, 0.25) 85%, rgba(40, 24, 10, 0.55) 100%);
 }
 .hero-copy {
   position: absolute;
@@ -1611,70 +1610,98 @@ html, body {
 
   // --- Scene / camera / renderer / lights ---
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x241408);
-  scene.fog = new THREE.Fog(0x3d2010, 40, 110);
+  scene.background = new THREE.Color(0x87c5e8);
+  scene.fog = new THREE.Fog(0xbcdff2, 80, 180);
   const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 300);
   camera.position.set(22, 20, 24); camera.lookAt(0, 0, 0);
   const renderer = new THREE.WebGLRenderer({ canvas: c3, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  scene.add(new THREE.AmbientLight(0x8a4e2e, 0.75));
-  const sun = new THREE.DirectionalLight(0xffb56e, 1.2);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.85));
+  const sun = new THREE.DirectionalLight(0xfff3d8, 1.2);
   sun.position.set(-18, 28, 10); scene.add(sun);
-  const rim = new THREE.DirectionalLight(0x5a2a18, 0.5);
-  rim.position.set(15, 8, -12); scene.add(rim);
+  const fill = new THREE.HemisphereLight(0xbcdff2, 0x6a4a2a, 0.5);
+  scene.add(fill);
 
-  // --- Sky dome (blue) + drifting clouds ---
+  // --- Sky dome (bright blue gradient) + drifting clouds ---
   const cloudGroup = new THREE.Group();
   (function () {
-    // blue-sky gradient dome
-    const sc = document.createElement('canvas'); sc.width = 64; sc.height = 256;
+    // sky gradient — vertical, bright daytime blue
+    const sc = document.createElement('canvas'); sc.width = 64; sc.height = 512;
     const sx = sc.getContext('2d');
-    const g = sx.createLinearGradient(0, 0, 0, 256);
-    g.addColorStop(0.0, '#4a86c4');
-    g.addColorStop(0.45, '#7ab0df');
-    g.addColorStop(0.8, '#b8dcf2');
-    g.addColorStop(1.0, '#e4f0f9');
-    sx.fillStyle = g; sx.fillRect(0, 0, 64, 256);
-    scene.add(new THREE.Mesh(
-      new THREE.SphereGeometry(80, 24, 16),
-      new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), side: THREE.BackSide, fog: false })
-    ));
+    const g = sx.createLinearGradient(0, 0, 0, 512);
+    g.addColorStop(0.0, '#3a78c0'); // zenith
+    g.addColorStop(0.35, '#6aa8e0');
+    g.addColorStop(0.65, '#a8d2ee');
+    g.addColorStop(0.88, '#d8ecf7');
+    g.addColorStop(1.0, '#eef6fc'); // near horizon
+    sx.fillStyle = g; sx.fillRect(0, 0, 64, 512);
+    const skyTex = new THREE.CanvasTexture(sc);
+    const skyMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(160, 32, 20),
+      new THREE.MeshBasicMaterial({
+        map: skyTex, side: THREE.BackSide, fog: false, depthWrite: false
+      })
+    );
+    skyMesh.renderOrder = -1;
+    scene.add(skyMesh);
 
-    // cloud texture (puffy white blobs on transparent bg)
+    // cloud texture — fluffy white puffs
     function cloudTex() {
-      const cc = document.createElement('canvas'); cc.width = 256; cc.height = 128;
+      const cc = document.createElement('canvas'); cc.width = 320; cc.height = 160;
       const cx = cc.getContext('2d');
-      const puffs = 7 + Math.floor(Math.random() * 5);
+      const puffs = 9 + Math.floor(Math.random() * 5);
       for (let i = 0; i < puffs; i++) {
-        const x = 30 + Math.random() * 196;
-        const y = 50 + Math.random() * 40;
-        const r = 20 + Math.random() * 30;
-        const gr = cx.createRadialGradient(x, y, 0, x, y, r);
-        gr.addColorStop(0, 'rgba(255,255,255,0.92)');
-        gr.addColorStop(0.55, 'rgba(255,255,255,0.55)');
+        const px = 40 + Math.random() * 240;
+        const py = 60 + Math.random() * 50;
+        const r = 26 + Math.random() * 38;
+        const gr = cx.createRadialGradient(px, py, 0, px, py, r);
+        gr.addColorStop(0, 'rgba(255,255,255,1)');
+        gr.addColorStop(0.4, 'rgba(255,255,255,0.85)');
+        gr.addColorStop(0.75, 'rgba(255,255,255,0.35)');
         gr.addColorStop(1, 'rgba(255,255,255,0)');
         cx.fillStyle = gr;
-        cx.beginPath(); cx.arc(x, y, r, 0, Math.PI * 2); cx.fill();
+        cx.beginPath(); cx.arc(px, py, r, 0, Math.PI * 2); cx.fill();
       }
+      // subtle bottom shadow for volume
+      const sh = cx.createLinearGradient(0, 0, 0, 160);
+      sh.addColorStop(0, 'rgba(255,255,255,0)');
+      sh.addColorStop(0.65, 'rgba(255,255,255,0)');
+      sh.addColorStop(1, 'rgba(170,195,220,0.25)');
+      cx.globalCompositeOperation = 'source-atop';
+      cx.fillStyle = sh; cx.fillRect(0, 0, 320, 160);
+      cx.globalCompositeOperation = 'source-over';
       return new THREE.CanvasTexture(cc);
     }
-    // scatter clouds around a ring above the town
-    const N = 9;
-    for (let i = 0; i < N; i++) {
-      const a = (i / N) * Math.PI * 2 + Math.random() * 0.5;
-      const r = 48 + Math.random() * 18;
-      const y = 18 + Math.random() * 14;
-      const w = 14 + Math.random() * 10;
-      const h = w * (0.42 + Math.random() * 0.18);
-      const mesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(w, h),
-        new THREE.MeshBasicMaterial({ map: cloudTex(), transparent: true, depthWrite: false, fog: false })
-      );
-      mesh.position.set(Math.sin(a) * r, y, Math.cos(a) * r);
-      mesh.userData.basePhase = Math.random() * Math.PI * 2;
-      mesh.userData.bobSpeed = 0.25 + Math.random() * 0.35;
-      cloudGroup.add(mesh);
-    }
+    // scatter clouds in two rings at different altitudes — bigger and more numerous
+    const layers = [
+      { count: 10, r: 55, y: 22, size: [18, 14] },  // upper ring
+      { count: 8,  r: 70, y: 14, size: [22, 18] }   // lower ring
+    ];
+    layers.forEach(L => {
+      for (let i = 0; i < L.count; i++) {
+        const a = (i / L.count) * Math.PI * 2 + Math.random() * 0.5;
+        const rr = L.r + (Math.random() - .5) * 8;
+        const yy = L.y + (Math.random() - .5) * 4;
+        const w = L.size[0] + Math.random() * L.size[1];
+        const h = w * (0.42 + Math.random() * 0.16);
+        const mesh = new THREE.Mesh(
+          new THREE.PlaneGeometry(w, h),
+          new THREE.MeshBasicMaterial({
+            map: cloudTex(),
+            transparent: true, depthWrite: false, fog: false, opacity: 0.95
+          })
+        );
+        mesh.position.set(Math.sin(a) * rr, yy, Math.cos(a) * rr);
+        mesh.userData.basePhase = Math.random() * Math.PI * 2;
+        mesh.userData.bobSpeed = 0.3 + Math.random() * 0.4;
+        mesh.userData.driftSpeed = 0.0012 + Math.random() * 0.0008;
+        mesh.userData.baseAngle = a;
+        mesh.userData.radius = rr;
+        mesh.userData.baseY = yy;
+        cloudGroup.add(mesh);
+      }
+    });
+    cloudGroup.renderOrder = 0;
     scene.add(cloudGroup);
   })();
 
@@ -1954,10 +1981,13 @@ html, body {
     const height = 19 - zoom * 5 + my * 2.5;
     camera.position.set(Math.sin(angle) * radius, height, Math.cos(angle) * radius);
     camera.lookAt(0, 0.8, 0);
-    // clouds: slow drift + gentle vertical bob + billboard toward camera
-    cloudGroup.rotation.y += 0.0008;
+    // clouds: each cloud drifts around its own ring + bobs + billboards to camera
     cloudGroup.children.forEach(cl => {
-      cl.position.y += Math.sin(t * cl.userData.bobSpeed + cl.userData.basePhase) * 0.003;
+      const u = cl.userData;
+      const a = u.baseAngle + t * u.driftSpeed * 60;
+      cl.position.x = Math.sin(a) * u.radius;
+      cl.position.z = Math.cos(a) * u.radius;
+      cl.position.y = u.baseY + Math.sin(t * u.bobSpeed + u.basePhase) * 0.45;
       cl.lookAt(camera.position);
     });
     renderer.render(scene, camera);
