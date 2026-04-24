@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Sample合同会社 - 不動産FP専門。廃れた街角で描く、次の一歩。">
 <title>Sample合同会社 | 静寂の中に灯る設計</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 /* Modal-Preview Auto-Rotate Cube + Dusk City Hero: 2026/4/23 */
 
@@ -443,6 +444,124 @@ html, body {
   font-size: 18px;
 }
 .cta:hover .arrow { transform: translateX(4px); }
+
+/* ========================= HERO OVERRIDE: Western Town (Three.js) ========================= */
+.hero {
+  height: 100vh;
+  min-height: 560px;
+  background: #1a1208;
+}
+.hero::before, .hero::after { display: none !important; }
+#wt-3d, #wt-sprites {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+#wt-3d { z-index: 0; }
+#wt-sprites { z-index: 1; pointer-events: none; }
+.wt-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 140% 70% at 50% 100%, transparent 35%, rgba(20, 10, 0, 0.55) 75%, rgba(10, 5, 0, 0.92) 100%),
+    radial-gradient(ellipse 160% 65% at 50% 0%, rgba(80, 45, 20, 0.35) 0%, transparent 55%);
+}
+.hero-copy {
+  position: absolute;
+  top: clamp(24px, 6vh, 64px);
+  left: clamp(20px, 5vw, 56px);
+  right: auto;
+  bottom: auto;
+  transform: none;
+  max-width: min(520px, 58vw);
+  z-index: 5;
+  text-align: left;
+  color: #F5E9D0;
+}
+.hero-kicker {
+  font-size: clamp(11px, 1.2vw, 14px);
+  letter-spacing: 0.35em;
+  color: #D9B97A;
+  margin-bottom: 14px;
+  font-weight: 500;
+  text-shadow: 1px 1px 0 #000, 0 2px 6px rgba(0,0,0,0.9);
+}
+.hero-title {
+  font-size: clamp(26px, 4.2vw, 50px);
+  font-weight: 900;
+  line-height: 1.25;
+  letter-spacing: 0.05em;
+  color: #F5E9D0;
+  text-shadow:
+    1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000,
+    2px 2px 0 #000, 0 2px 8px rgba(0,0,0,0.85);
+  margin-bottom: 0;
+}
+.hero-title .accent {
+  color: #F1B25C;
+  font-weight: 900;
+  text-shadow:
+    1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000,
+    2px 2px 0 #000, 0 0 18px rgba(220, 110, 40, 0.7);
+}
+.wt-cta {
+  position: absolute;
+  bottom: clamp(30px, 7vh, 72px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 34px;
+  font-size: clamp(13px, 1.3vw, 16px);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #FAECC8;
+  background: linear-gradient(180deg, #8A3A26 0%, #5E2315 55%, #3B140A 100%);
+  border: 1px solid #2A0C06;
+  border-radius: 3px;
+  text-decoration: none;
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.65),
+    inset 0 1px 0 rgba(255, 200, 140, 0.35),
+    inset 0 -2px 4px rgba(0,0,0,0.5);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.85);
+  transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+}
+.wt-cta::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(250, 236, 200, 0.25);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.wt-cta:hover, .wt-cta:focus-visible {
+  transform: translateX(-50%) translateY(-2px);
+  background: linear-gradient(180deg, #A0452E 0%, #7A2B19 55%, #4A1810 100%);
+  box-shadow:
+    0 6px 22px rgba(150, 40, 10, 0.55),
+    inset 0 1px 0 rgba(255, 220, 170, 0.45),
+    inset 0 -2px 4px rgba(0,0,0,0.5);
+  outline: none;
+}
+.wt-cta .arrow { font-size: 1.1em; transform: translateY(-1px); }
+
+@media (max-width: 768px) {
+  .hero-copy {
+    top: clamp(18px, 4vh, 36px);
+    left: clamp(14px, 5vw, 28px);
+    right: clamp(70px, 18vw, 100px);
+    max-width: none;
+  }
+  .hero-title { font-size: clamp(22px, 6.5vw, 36px); letter-spacing: 0.03em; }
+  .wt-cta { padding: 12px 24px; font-size: 13px; letter-spacing: 0.18em; }
+}
 
 /* ========================= CUBE STAGE (Docked ↔ Active) ========================= */
 .cube-backdrop {
@@ -1198,16 +1317,6 @@ html, body {
 /* ========================= RESPONSIVE ========================= */
 @media (max-width: 768px) {
   :root { --cube-size: min(260px, 80vw, 60vh); }
-  .neon-sign { top: 12%; left: 6%; font-size: clamp(42px, 14vw, 90px); }
-  .hero-copy {
-    right: 6vw;
-    left: 6vw;
-    max-width: none;
-    top: auto;
-    bottom: 8%;
-    transform: none;
-    text-align: right;
-  }
   .cube-stage { top: 16px; right: 16px; }
   .cube-stage::after { display: none; }
   .cube-close { top: 16px; right: 16px; }
@@ -1284,44 +1393,27 @@ html, body {
 <body>
 
 <section class="hero" aria-label="Sample合同会社 ヒーローセクション">
-  <!-- Background layers -->
-  <div class="stars" aria-hidden="true"></div>
-  <div class="shooting-star-glow" aria-hidden="true"></div>
-  <div class="shooting-star" aria-hidden="true"></div>
+  <!-- 3D background: Western town (Three.js) -->
+  <canvas id="wt-3d" aria-hidden="true"></canvas>
+  <!-- 2D overlay: people / horses / carts sprites -->
+  <canvas id="wt-sprites" aria-hidden="true"></canvas>
+  <!-- Vignette / atmosphere -->
+  <div class="wt-vignette" aria-hidden="true"></div>
 
-  <!-- City silhouette -->
-  <div class="city" aria-hidden="true">
-    <div class="building" style="left: 0%;   width: 8%;  height: 48%;"></div>
-    <div class="building" style="left: 7%;   width: 6%;  height: 72%;"></div>
-    <div class="building" style="left: 13%;  width: 9%;  height: 56%;"></div>
-    <div class="building" style="left: 22%;  width: 7%;  height: 82%;"></div>
-    <div class="building" style="left: 29%;  width: 5%;  height: 64%;"></div>
-    <div class="building" style="left: 34%;  width: 8%;  height: 70%;"></div>
-    <div class="building" style="left: 42%;  width: 6%;  height: 52%;"></div>
-    <div class="building" style="left: 48%;  width: 10%; height: 85%;"></div>
-    <div class="building" style="left: 58%;  width: 5%;  height: 46%;"></div>
-    <div class="building" style="left: 63%;  width: 7%;  height: 68%;"></div>
-    <div class="building" style="left: 70%;  width: 6%;  height: 58%;"></div>
-    <div class="building" style="left: 76%;  width: 9%;  height: 78%;"></div>
-    <div class="building" style="left: 85%;  width: 7%;  height: 50%;"></div>
-    <div class="building" style="left: 92%;  width: 8%;  height: 66%;"></div>
-  </div>
-
-  <!-- SAMPLE neon sign (left, tilted) -->
-  <div class="neon-sign" aria-hidden="true">
-    <span class="mount mount-l"></span>
-    <span class="mount mount-r"></span>
-    <span class="f1">S</span><span>A</span><span class="f2">M</span><span>P</span><span class="f1">L</span><span class="f2">E</span>
-    <span class="sub">// since 1984〜</span>
-  </div>
-
-  <!-- Hero copy (right side) -->
+  <!-- Hero copy (top-left) -->
   <div class="hero-copy">
+    <p class="hero-kicker">SAMPLE LLC — SINCE 1984</p>
     <h1 class="hero-title">
-      静寂の街角で、<br>
+      西の果て、朽ちた街で、<br>
       <span class="accent">次の一歩</span>を描く。
     </h1>
   </div>
+
+  <!-- CTA (bottom center) -->
+  <a class="wt-cta" href="#choices">
+    無料相談はこちら
+    <span class="arrow" aria-hidden="true">▸</span>
+  </a>
 </section>
 
 <!-- ===== CHOICES SECTION: Three glowing doorways ===== -->
@@ -1428,6 +1520,296 @@ html, body {
     </div>
   </div>
 </div>
+
+<script>
+/* ===== Western Town Hero — Three.js 3D scene + 2D sprite overlay ===== */
+(function () {
+  if (!window.THREE) return;
+  const c3 = document.getElementById('wt-3d');
+  const c2 = document.getElementById('wt-sprites');
+  const hero = document.querySelector('.hero');
+  if (!c3 || !c2 || !hero) return;
+
+  // --- Procedural textures ---
+  function woodTex(w, h, hue) {
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const x = c.getContext('2d');
+    x.fillStyle = `hsl(${hue},35%,24%)`; x.fillRect(0, 0, w, h);
+    const pw = 28;
+    for (let i = 0; i < w; i += pw) {
+      x.fillStyle = `hsl(${hue + (Math.random() - .5) * 10},30%,${18 + Math.random() * 18}%)`;
+      x.fillRect(i, 0, pw, h);
+      for (let g = 0; g < 4; g++) {
+        x.strokeStyle = `hsla(${hue},45%,${8 + Math.random() * 12}%,.45)`;
+        x.lineWidth = .6 + Math.random() * .7;
+        x.beginPath();
+        x.moveTo(i + Math.random() * pw, 0);
+        x.bezierCurveTo(i + Math.random() * pw, h * .33, i + Math.random() * pw, h * .66, i + Math.random() * pw, h);
+        x.stroke();
+      }
+      x.fillStyle = 'rgba(0,0,0,.85)'; x.fillRect(i + pw - 1, 0, 1.5, h);
+    }
+    for (let i = 0; i < 38; i++) {
+      const sx = Math.random() * w, sy = Math.random() * h, r = 4 + Math.random() * 16;
+      const gr = x.createRadialGradient(sx, sy, 0, sx, sy, r);
+      gr.addColorStop(0, `rgba(20,10,0,${.2 + Math.random() * .3})`); gr.addColorStop(1, 'rgba(0,0,0,0)');
+      x.fillStyle = gr; x.beginPath(); x.arc(sx, sy, r, 0, Math.PI * 2); x.fill();
+    }
+    x.strokeStyle = 'rgba(0,0,0,.3)';
+    for (let i = 0; i < 10; i++) {
+      x.lineWidth = .5 + Math.random(); x.beginPath();
+      const sx = Math.random() * w; x.moveTo(sx, 0); x.lineTo(sx + (Math.random() - .5) * 10, h); x.stroke();
+    }
+    const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+  }
+  function signTex(text) {
+    const w = 512, h = 180, c = document.createElement('canvas'); c.width = w; c.height = h;
+    const x = c.getContext('2d');
+    x.fillStyle = '#3a2010'; x.fillRect(0, 0, w, h);
+    x.fillStyle = '#c29050'; x.fillRect(14, 14, w - 28, h - 28);
+    x.fillStyle = '#1f0f08'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.font = 'bold 92px Georgia, serif';
+    x.fillText(text, w / 2, h / 2 + 4);
+    // wear: scratches
+    x.globalCompositeOperation = 'destination-out';
+    for (let i = 0; i < 260; i++) {
+      x.fillStyle = `rgba(0,0,0,${Math.random() * .9})`;
+      x.fillRect(Math.random() * w, Math.random() * h, Math.random() * 3.5, Math.random() * 3.5);
+    }
+    x.globalCompositeOperation = 'source-over';
+    // paint peel patches
+    for (let i = 0; i < 22; i++) {
+      const sx = Math.random() * w, sy = Math.random() * h, s = 8 + Math.random() * 28;
+      x.fillStyle = `rgba(58,32,16,${.4 + Math.random() * .4})`;
+      x.beginPath(); x.ellipse(sx, sy, s, s * .55, Math.random() * Math.PI, 0, Math.PI * 2); x.fill();
+    }
+    const vg = x.createRadialGradient(w / 2, h / 2, 40, w / 2, h / 2, w * .8);
+    vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.55)');
+    x.fillStyle = vg; x.fillRect(0, 0, w, h);
+    return new THREE.CanvasTexture(c);
+  }
+  function groundTex() {
+    const w = 1024, h = 1024, c = document.createElement('canvas'); c.width = w; c.height = h;
+    const x = c.getContext('2d');
+    const gr = x.createLinearGradient(0, 0, w, 0);
+    gr.addColorStop(0, '#6b4a2e'); gr.addColorStop(.35, '#5c3d22');
+    gr.addColorStop(.5, '#482e18'); gr.addColorStop(.65, '#5c3d22'); gr.addColorStop(1, '#6b4a2e');
+    x.fillStyle = gr; x.fillRect(0, 0, w, h);
+    for (let i = 0; i < 7000; i++) {
+      x.fillStyle = `hsla(${25 + Math.random() * 15},${20 + Math.random() * 20}%,${18 + Math.random() * 40}%,${Math.random() * .6})`;
+      x.fillRect(Math.random() * w, Math.random() * h, 1 + Math.random() * 2.5, 1 + Math.random() * 2.5);
+    }
+    x.strokeStyle = 'rgba(18,8,0,.45)'; x.lineWidth = 4;
+    for (let r = 0; r < 2; r++) {
+      const cx = w / 2 + (r === 0 ? -42 : 42);
+      x.beginPath(); x.moveTo(cx, 0);
+      x.bezierCurveTo(cx - 6, h * .3, cx + 8, h * .6, cx + (Math.random() - .5) * 20, h);
+      x.stroke();
+    }
+    const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+  }
+
+  // --- Scene / camera / renderer / lights ---
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x2a180a);
+  scene.fog = new THREE.Fog(0x3d2010, 10, 48);
+  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
+  camera.position.set(0, 3.2, 14); camera.lookAt(0, 2, 0);
+  const renderer = new THREE.WebGLRenderer({ canvas: c3, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  scene.add(new THREE.AmbientLight(0x7a4326, 0.7));
+  const sun = new THREE.DirectionalLight(0xffb56e, 1.1);
+  sun.position.set(-18, 12, -6); scene.add(sun);
+
+  // --- Sky dome ---
+  (function () {
+    const sc = document.createElement('canvas'); sc.width = 64; sc.height = 256;
+    const sx = sc.getContext('2d');
+    const g = sx.createLinearGradient(0, 0, 0, 256);
+    g.addColorStop(0, '#1d1008'); g.addColorStop(.35, '#3a1e10');
+    g.addColorStop(.62, '#8a3e1a'); g.addColorStop(.82, '#c4702a'); g.addColorStop(1, '#e8a55a');
+    sx.fillStyle = g; sx.fillRect(0, 0, 64, 256);
+    scene.add(new THREE.Mesh(
+      new THREE.SphereGeometry(80, 24, 16),
+      new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), side: THREE.BackSide, fog: false })
+    ));
+  })();
+
+  // --- Ground ---
+  (function () {
+    const tex = groundTex(); tex.repeat.set(1, 6);
+    const g = new THREE.Mesh(
+      new THREE.PlaneGeometry(80, 120),
+      new THREE.MeshLambertMaterial({ map: tex })
+    );
+    g.rotation.x = -Math.PI / 2; g.position.z = -20; scene.add(g);
+  })();
+
+  // --- Buildings ---
+  const woods = [woodTex(256, 256, 28), woodTex(256, 256, 18), woodTex(256, 256, 36)];
+  function mkBld(w, h, d, tex, sign) {
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshLambertMaterial({ map: tex }));
+    body.position.y = h / 2; g.add(body);
+    // porch roof
+    const porch = new THREE.Mesh(
+      new THREE.BoxGeometry(w + 0.6, 0.14, 1.1),
+      new THREE.MeshLambertMaterial({ color: 0x2f1808 })
+    );
+    porch.position.set(0, h * 0.46, d / 2 + 0.5); g.add(porch);
+    for (let s = -1; s <= 1; s += 2) {
+      const p = new THREE.Mesh(
+        new THREE.BoxGeometry(0.1, h * 0.46, 0.1),
+        new THREE.MeshLambertMaterial({ color: 0x1f1208 })
+      );
+      p.position.set((w / 2 - 0.15) * s, h * 0.23, d / 2 + 0.95); g.add(p);
+    }
+    // roof (triangular prism via box tilted)
+    const roof = new THREE.Mesh(
+      new THREE.BoxGeometry(w + 0.4, 0.12, d + 0.3),
+      new THREE.MeshLambertMaterial({ color: 0x241208 })
+    );
+    roof.position.y = h + 0.04; g.add(roof);
+    if (sign) {
+      const s = new THREE.Mesh(
+        new THREE.PlaneGeometry(w * 0.78, 0.85),
+        new THREE.MeshBasicMaterial({ map: signTex(sign), transparent: true })
+      );
+      s.position.set(0, h * 0.72, d / 2 + 0.02); g.add(s);
+    }
+    return g;
+  }
+  const blds = [
+    { x: -4.2, z:   2, w: 3.4, h: 3.6, d: 3.0, t: 0, sign: 'SAMPLE' },
+    { x: -4.4, z:  -3, w: 3.2, h: 3.2, d: 2.8, t: 1, sign: null     },
+    { x: -4.6, z:  -8, w: 3.6, h: 3.8, d: 3.2, t: 2, sign: 'SAMPLE' },
+    { x: -4.3, z: -14, w: 3.2, h: 3.4, d: 3.0, t: 0, sign: null     },
+    { x: -4.5, z: -20, w: 3.0, h: 3.0, d: 3.0, t: 1, sign: null     },
+    { x:  4.2, z:   2, w: 3.4, h: 3.4, d: 3.0, t: 1, sign: null     },
+    { x:  4.4, z:  -3, w: 3.6, h: 4.0, d: 3.2, t: 2, sign: 'SAMPLE' },
+    { x:  4.6, z:  -8, w: 3.2, h: 3.2, d: 3.0, t: 0, sign: null     },
+    { x:  4.3, z: -14, w: 3.4, h: 3.6, d: 3.0, t: 1, sign: 'SAMPLE' },
+    { x:  4.5, z: -20, w: 3.2, h: 3.0, d: 3.0, t: 2, sign: null     }
+  ];
+  blds.forEach(b => {
+    const m = mkBld(b.w, b.h, b.d, woods[b.t], b.sign);
+    m.position.set(b.x, 0, b.z);
+    m.rotation.y = b.x < 0 ? -Math.PI / 2 : Math.PI / 2;
+    scene.add(m);
+  });
+
+  // --- 2D sprite overlay (people / horses) ---
+  const s2 = c2.getContext('2d');
+  const sprites = [
+    { type: 'cowboy', x: 0.28, y: 0.72, sp:  0.035, ph: 0.0, depth: 0.55 },
+    { type: 'cowboy', x: 0.63, y: 0.66, sp: -0.028, ph: 1.4, depth: 0.78 },
+    { type: 'horse',  x: 0.45, y: 0.78, sp:  0.022, ph: 0.7, depth: 0.30 },
+    { type: 'cowboy', x: 0.82, y: 0.68, sp: -0.020, ph: 2.3, depth: 0.88 },
+    { type: 'townie', x: 0.15, y: 0.70, sp:  0.030, ph: 3.1, depth: 0.65 }
+  ];
+  function cowboy(x, y, s, f) {
+    s2.save(); s2.translate(x, y); s2.scale(s, s);
+    s2.fillStyle = 'rgba(12,6,2,0.94)';
+    s2.beginPath(); s2.ellipse(0, -28, 9, 2, 0, 0, Math.PI * 2); s2.fill();
+    s2.fillRect(-4, -31, 8, 4);
+    s2.beginPath(); s2.arc(0, -22, 3.2, 0, Math.PI * 2); s2.fill();
+    s2.fillRect(-4, -18, 8, 13);
+    const as = Math.sin(f) * 2;
+    s2.fillRect(-6, -17, 2, 10 + as);
+    s2.fillRect(4, -17, 2, 10 - as);
+    const ls = Math.sin(f) * 3;
+    s2.fillRect(-3, -5, 2.5, 8 + ls);
+    s2.fillRect(0.5, -5, 2.5, 8 - ls);
+    s2.restore();
+  }
+  function townie(x, y, s, f) {
+    s2.save(); s2.translate(x, y); s2.scale(s, s);
+    s2.fillStyle = 'rgba(20,12,6,0.88)';
+    s2.fillRect(-4, -30, 8, 3);
+    s2.beginPath(); s2.arc(0, -24, 3, 0, Math.PI * 2); s2.fill();
+    s2.fillRect(-4, -20, 8, 12);
+    const sw = Math.sin(f) * 2.5;
+    s2.fillRect(-5, -19, 2, 10 + sw); s2.fillRect(3, -19, 2, 10 - sw);
+    s2.fillRect(-3, -8, 2.5, 9 + sw); s2.fillRect(0.5, -8, 2.5, 9 - sw);
+    s2.restore();
+  }
+  function horse(x, y, s, f) {
+    s2.save(); s2.translate(x, y); s2.scale(s, s);
+    s2.fillStyle = 'rgba(12,6,2,0.94)';
+    s2.beginPath(); s2.ellipse(0, -10, 14, 6, 0, 0, Math.PI * 2); s2.fill();
+    s2.beginPath();
+    s2.moveTo(10, -13); s2.lineTo(17, -22); s2.lineTo(20, -22);
+    s2.lineTo(22, -18); s2.lineTo(19, -14); s2.lineTo(13, -9); s2.closePath(); s2.fill();
+    const sw = Math.sin(f) * 2;
+    s2.fillRect(-10, -6, 2, 10 + sw); s2.fillRect(-6, -6, 2, 10 - sw);
+    s2.fillRect(6, -6, 2, 10 - sw);  s2.fillRect(10, -6, 2, 10 + sw);
+    s2.beginPath(); s2.moveTo(-12, -12); s2.lineTo(-18, -6); s2.lineTo(-15, -5); s2.closePath(); s2.fill();
+    s2.restore();
+  }
+
+  // --- Resize ---
+  function resize() {
+    const r = hero.getBoundingClientRect();
+    renderer.setSize(r.width, r.height, false);
+    camera.aspect = r.width / r.height; camera.updateProjectionMatrix();
+    const dpr = window.devicePixelRatio || 1;
+    c2.width = r.width * dpr; c2.height = r.height * dpr;
+    c2.style.width = r.width + 'px'; c2.style.height = r.height + 'px';
+  }
+  window.addEventListener('resize', resize); resize();
+
+  // --- Interaction: scroll zoom + pointer parallax ---
+  let zoom = 0, tZoom = 0, mx = 0, my = 0, tmx = 0, tmy = 0;
+  function onScroll() {
+    const r = hero.getBoundingClientRect();
+    tZoom = Math.min(1, Math.max(0, -r.top / r.height) * 2.0);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  hero.addEventListener('pointermove', e => {
+    const r = hero.getBoundingClientRect();
+    tmx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+    tmy = ((e.clientY - r.top) / r.height - 0.5) * 2;
+  });
+  hero.addEventListener('pointerleave', () => { tmx = 0; tmy = 0; });
+  // mobile tilt as parallax
+  window.addEventListener('deviceorientation', e => {
+    if (e.gamma == null || e.beta == null) return;
+    tmx = Math.max(-1, Math.min(1, e.gamma / 30));
+    tmy = Math.max(-1, Math.min(1, (e.beta - 30) / 30));
+  });
+
+  // --- Animate ---
+  let t = 0;
+  (function loop() {
+    t += 0.016;
+    zoom += (tZoom - zoom) * 0.08;
+    mx += (tmx - mx) * 0.06; my += (tmy - my) * 0.06;
+    camera.position.set(mx * 0.7, 3.2 + my * 0.3 - zoom * 0.4, 14 - zoom * 9);
+    camera.lookAt(mx * 0.4, 2 - zoom * 0.2, -2);
+    renderer.render(scene, camera);
+
+    const dpr = window.devicePixelRatio || 1;
+    s2.setTransform(1, 0, 0, 1, 0, 0);
+    s2.clearRect(0, 0, c2.width, c2.height);
+    s2.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const W = c2.width / dpr, H = c2.height / dpr;
+    sprites.forEach(sp => {
+      sp.ph += sp.sp;
+      if (sp.ph > 1.3) sp.ph = -0.3;
+      if (sp.ph < -0.3) sp.ph = 1.3;
+      const px = (sp.x + Math.sin(t * 0.3 + sp.ph) * 0.04) * W;
+      const py = sp.y * H;
+      const base = 0.55 + (1 - sp.depth) * 0.35;
+      const sc = base * (1 + zoom * 2.4);
+      const fr = t * 6 + sp.ph * 6;
+      if (sp.type === 'cowboy') cowboy(px, py, sc, fr);
+      else if (sp.type === 'horse') horse(px, py, sc, fr);
+      else townie(px, py, sc, fr);
+    });
+    requestAnimationFrame(loop);
+  })();
+})();
+</script>
 
 <script>
 /* ============================================================
