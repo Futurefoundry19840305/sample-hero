@@ -1623,18 +1623,59 @@ html, body {
   const rim = new THREE.DirectionalLight(0x5a2a18, 0.5);
   rim.position.set(15, 8, -12); scene.add(rim);
 
-  // --- Sky dome ---
+  // --- Sky dome (blue) + drifting clouds ---
+  const cloudGroup = new THREE.Group();
   (function () {
+    // blue-sky gradient dome
     const sc = document.createElement('canvas'); sc.width = 64; sc.height = 256;
     const sx = sc.getContext('2d');
     const g = sx.createLinearGradient(0, 0, 0, 256);
-    g.addColorStop(0, '#1d1008'); g.addColorStop(.35, '#3a1e10');
-    g.addColorStop(.62, '#8a3e1a'); g.addColorStop(.82, '#c4702a'); g.addColorStop(1, '#e8a55a');
+    g.addColorStop(0.0, '#4a86c4');
+    g.addColorStop(0.45, '#7ab0df');
+    g.addColorStop(0.8, '#b8dcf2');
+    g.addColorStop(1.0, '#e4f0f9');
     sx.fillStyle = g; sx.fillRect(0, 0, 64, 256);
     scene.add(new THREE.Mesh(
       new THREE.SphereGeometry(80, 24, 16),
       new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), side: THREE.BackSide, fog: false })
     ));
+
+    // cloud texture (puffy white blobs on transparent bg)
+    function cloudTex() {
+      const cc = document.createElement('canvas'); cc.width = 256; cc.height = 128;
+      const cx = cc.getContext('2d');
+      const puffs = 7 + Math.floor(Math.random() * 5);
+      for (let i = 0; i < puffs; i++) {
+        const x = 30 + Math.random() * 196;
+        const y = 50 + Math.random() * 40;
+        const r = 20 + Math.random() * 30;
+        const gr = cx.createRadialGradient(x, y, 0, x, y, r);
+        gr.addColorStop(0, 'rgba(255,255,255,0.92)');
+        gr.addColorStop(0.55, 'rgba(255,255,255,0.55)');
+        gr.addColorStop(1, 'rgba(255,255,255,0)');
+        cx.fillStyle = gr;
+        cx.beginPath(); cx.arc(x, y, r, 0, Math.PI * 2); cx.fill();
+      }
+      return new THREE.CanvasTexture(cc);
+    }
+    // scatter clouds around a ring above the town
+    const N = 9;
+    for (let i = 0; i < N; i++) {
+      const a = (i / N) * Math.PI * 2 + Math.random() * 0.5;
+      const r = 48 + Math.random() * 18;
+      const y = 18 + Math.random() * 14;
+      const w = 14 + Math.random() * 10;
+      const h = w * (0.42 + Math.random() * 0.18);
+      const mesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(w, h),
+        new THREE.MeshBasicMaterial({ map: cloudTex(), transparent: true, depthWrite: false, fog: false })
+      );
+      mesh.position.set(Math.sin(a) * r, y, Math.cos(a) * r);
+      mesh.userData.basePhase = Math.random() * Math.PI * 2;
+      mesh.userData.bobSpeed = 0.25 + Math.random() * 0.35;
+      cloudGroup.add(mesh);
+    }
+    scene.add(cloudGroup);
   })();
 
   // --- Ground: rounded plate with painted loop road ---
@@ -1913,6 +1954,12 @@ html, body {
     const height = 19 - zoom * 5 + my * 2.5;
     camera.position.set(Math.sin(angle) * radius, height, Math.cos(angle) * radius);
     camera.lookAt(0, 0.8, 0);
+    // clouds: slow drift + gentle vertical bob + billboard toward camera
+    cloudGroup.rotation.y += 0.0008;
+    cloudGroup.children.forEach(cl => {
+      cl.position.y += Math.sin(t * cl.userData.bobSpeed + cl.userData.basePhase) * 0.003;
+      cl.lookAt(camera.position);
+    });
     renderer.render(scene, camera);
 
     const dpr = window.devicePixelRatio || 1;
